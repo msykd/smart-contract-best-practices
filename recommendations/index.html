@@ -1015,7 +1015,7 @@ cannot be prevented.</p>
 <h2 id="explicitly-mark-visibility-in-functions-and-state-variables">Explicitly mark visibility in functions and state variables<a class="headerlink" href="#explicitly-mark-visibility-in-functions-and-state-variables" title="Permanent link">&para;</a></h2>
 <p>Explicitly label the visibility of functions and state variables. Functions can be specified as being <code>external</code>, <code>public</code>, <code>internal</code> or <code>private</code>. Please understand the differences between them, for example, <code>external</code> may be sufficient instead of <code>public</code>. For state variables, <code>external</code> is not possible. Labeling the visibility explicitly will make it easier to catch incorrect assumptions about who can call the function or access the variable.</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
-<span class="kt">uint</span> <span class="n">x</span><span class="p">;</span> <span class="c1">// the default is private for state variables, but it should be made explicit</span>
+<span class="kt">uint</span> <span class="n">x</span><span class="p">;</span> <span class="c1">// the default is internal for state variables, but it should be made explicit</span>
 <span class="kd">function</span> <span class="n">buy</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// the default is public</span>
     <span class="c1">// public code</span>
 <span class="p">}</span>

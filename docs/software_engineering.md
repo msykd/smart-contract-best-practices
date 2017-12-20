@@ -1,22 +1,36 @@
-As we discussed in the [General Philosophy](#general-philosophy) section, it is not enough to protect yourself against the known attacks. Since the cost of failure on a blockchain can be very high, you must also adapt the way you write software, to account for that risk.
+既知の攻撃を防ぐだけでは不十分です。
+ブロックチェーン上の障害のコストは非常に高くなる可能性があるため、そのリスクを考慮に入れてソフトウェアの書き方に適用する必要があります。
 
-The approach we advocate is to "prepare for failure". It is impossible to know in advance whether your code is secure. However, you can architect your contracts in a way that allows them to fail gracefully, and with minimal damage. This section presents a variety of techniques that will help you prepare for failure.
+私たちが提唱するアプローチは、「失敗に備える」ことです。
+コードが安全かどうかを事前に知ることは不可能です。
+ただしコントラクトを、失敗しても最小限の損害を与えるように設計することはできます。
+このセクションでは、障害の準備に役立つさまざまなテクニックを紹介します。
 
-Note: There's always a risk when you add a new component to your system. A badly designed fail-safe could itself become a vulnerability - as can the interaction between a number of well designed fail-safes. Be thoughtful about each technique you use in your contracts, and consider carefully how they work together to create a robust system.
+注:システムに新しいコンポーネントを追加すると、常に危険が生じます。
+誤って設計されたフェールセーフが脆弱性になる可能性があります。
+堅牢なシステムを構築するために、コントラクトで使用するそれぞれのテクニックをどう連携するか注意深く検討してください。
 
-### Upgrading Broken Contracts
+### 壊れたコントラクトのアップグレード
 
-Code will need to be changed if errors are discovered or if improvements need to be made. It is no good to discover a bug, but have no way to deal with it.
+エラーが発見された場合、または改善が必要な場合は、コードを変更する必要があります。 バグを発見するのは良いことではありませんが、対処する方法はありません。
 
-Designing an effective upgrade system for smart contracts is an area of active research, and we won't be able to cover all of the complications in this document. However, there are two basic approaches that are most commonly used. The simpler of the two is to have a registry contract that holds the address of the latest version of the contract. A more seamless approach for contract users is to have a contract that forwards calls and data onto the latest version of the contract.
+スマートコントラクトのための効果的なアップグレードシステムを設計することは積極的な研究の領域であり、このドキュメントではすべての複雑な問題をカバーすることはできません。
+しかし、最も一般的に使用される2つの基本的なアプローチがあります。
+2つのうちの単純なものは、コントラクトの最新バージョンのアドレスを保持するレジストリコントラクトを持つことです。
+ユーザーにとってよりシームレスなアプローチは、最新のコントラクトにデータを転送することです。
 
-Whatever the technique, it's important to have modularization and good separation between components, so that code changes do not break functionality, orphan data, or require substantial costs to port. In particular, it is usually beneficial to separate complex logic from your data storage, so that you do not have to recreate all of the data in order to change the functionality.
+どんな技術であれ、コンポーネントのモジュール化と適切な分離が重要であり、コードの変更によって機能が損なわれたり、データが孤立したり、
+移植に多額のコストがかかることはありません。特に、複雑なロジックをデータストレージから分離すると、機能を変更するためにすべてのデータを再作成する必要はありません。
 
-It's also critical to have a secure way for parties to decide to upgrade the code. Depending on your contract, code changes may need to be approved by a single trusted party, a group of members, or a vote of the full set of stakeholders. If this process can take some time, you will want to consider if there are other ways to react more quickly in case of an attack, such as an [emergency stop or circuit-breaker](https://github.com/ConsenSys/smart-contract-best-practices/#circuit-breakers-pause-contract-functionality).
+また、当事者がコードをアップグレードすることを決定する安全な方法を持つことも重要です。
+契約に応じて、コード変更は、単一の信頼できる当事者、メンバーのグループ、または一連のステークホルダーの投票によって承認される必要があります。
+このプロセスに時間がかかる場合は、
+[緊急停止またはサーキットブレーカー]（https://github.com/ConsenSys/smart-contract-best-practices/#circuit-breakers-pause-contract-functionality）など、
+攻撃の際により迅速に対応する他の方法があるかどうかを検討する必要があります。
 
-**Example 1: Use a registry contract to store latest version of a contract**
+**例1: レジストリコントラクトを使用して最新バージョンのコントラクトを保存する**
 
-In this example, the calls aren't forwarded, so users should fetch the current address each time before interacting with it.
+この例では、callは転送されないため、ユーザーはcallする前に現在のアドレスを取得する必要があります。
 
 ```sol
 contract SomeRegister {
@@ -48,14 +62,14 @@ contract SomeRegister {
 }
 ```
 
-There are two main disadvantages to this approach:
+このアプローチには主に2つの欠点があります。
 
-1. Users must always look up the current address, and anyone who fails to do so risks using an old version of the contract
-2. You will need to think carefully about how to deal with the contract data when you replace the contract
+1.ユーザーは常に現在のアドレスを検索しなければなりません。そうしないと、古いバージョンのコントラクトを使用するリスクが発生します。
+2.コントラクトを取り替えるときにデータをどのように扱うかについては、注意深く考える必要があります。
 
-The alternate approach is to have a contract forward calls and data to the latest version of the contract:
+別のアプローチでは、最新のコントラクトにデータを転送する必要があります。
 
-**Example 2: [Use a `DELEGATECALL`](http://ethereum.stackexchange.com/questions/2404/upgradeable-contracts) to forward data and calls**
+**例2: [Use a `DELEGATECALL`](http://ethereum.stackexchange.com/questions/2404/upgradeable-contracts)を使用してデータを転送する**
 
 ```sol
 contract Relay {
@@ -84,15 +98,24 @@ contract Relay {
 }
 ```
 
-This approach avoids the previous problems but has problems of its own. You must be extremely careful with how you store data in this contract. If your new contract has a different storage layout than the first, your data may end up corrupted. Additionally, this simple version of the pattern cannot return values from functions, only forward them, which limits its applicability. ([More complex implementations](https://github.com/ownage-ltd/ether-router) attempt to solve this with in-line assembly code and a registry of return sizes.)
+このアプローチは、以前の問題を回避するが、それ自体の問題を有する。
+このコントラクトにどのようにデータを格納するかについては、非常に注意する必要があります。
+新規コントラクトのストレージレイアウトが最初のものと異なる場合、データが破損する可能性があります。
+さらに、このシンプルなバージョンのパターンでは、関数から値を返すことはできません。
+それらを転送するだけで、その適用性が制限されます。
+（[もっと複雑な実装]（https://github.com/ownage-ltd/ether-router）は、インラインアセンブリコードと戻り値のレジストリでこれを解決しようとしています。）
 
-Regardless of your approach, it is important to have some way to upgrade your contracts, or they will become unusable when the inevitable bugs are discovered in them.
+あなたのアプローチにかかわらず、あなたのコントラクトをアップグレードするには何らかの方法があることが重要です。
+そうでなければ、不可避のバグが発見されたときには使用できなくなります。
 
-### Circuit Breakers (Pause contract functionality)
+### サーキットブレーカー(コントラクトの一時停止)
 
-Circuit breakers stop execution if certain conditions are met, and can be useful when new errors are discovered. For example, most actions may be suspended in a contract if a bug is discovered, and the only action now active is a withdrawal. You can either give certain trusted parties the ability to trigger the circuit breaker or else have programmatic rules that automatically trigger the certain breaker when certain conditions are met.
+サーキットブレーカーは、特定の条件が満たされると実行を停止し、新しいエラーが検出されたときに役立ちます。
+たとえばバグが発見された場合、ほとんどのアクションは中断され、現在アクティブなアクションは取り消します。
+特定の関係者にサーキットブレーカーをトリガーする機能を与えるか、
+特定の条件が満たされたときに特定のブレーカーを自動的にトリガーするプログラムルールを与えることができます。
 
-Example:
+例:
 
 ```sol
 bool private stopped = false;
@@ -120,9 +143,12 @@ function withdraw() onlyInEmergency public {
 }
 ```
 
-### Speed Bumps (Delay contract actions)
+### スピードバンプ (遅延契約アクション)
 
-Speed bumps slow down actions, so that if malicious actions occur, there is time to recover. For example, [The DAO](https://github.com/slockit/DAO/) required 27 days between a successful request to split the DAO and the ability to do so. This ensured the funds were kept within the contract, increasing the likelihood of recovery. In the case of the DAO, there was no effective action that could be taken during the time given by the speed bump, but in combination with our other techniques, they can be quite effective.
+スピードバンプはアクションを遅くするので、悪意のあるアクションが発生した場合、回復する時間があります。
+例えば、[The DAO]（https://github.com/slockit/DAO/）は、DAOを分割する要求が成功してからその能力を得るまでに27日間必要でした。
+これにより、資金が契約内に保たれ、回復の可能性が高められました。
+DAOの場合、スピードバンプによって与えられた時間の間に取ることができる効果的なアクションはありませんでしたが、他のテクニックと組み合わせて、非常に効果的です。
 
 Example:
 
@@ -159,27 +185,31 @@ function withdraw() public {
 }
 ```
 
-### Rate Limiting
+### レート制限
 
-Rate limiting halts or requires approval for substantial changes. For example, a depositor may only be allowed to withdraw a certain amount or percentage of total deposits over a certain time period (e.g., max 100 ether over 1 day) - additional withdrawals in that time period may fail or require some sort of special approval. Or the rate limit could be at the contract level, with only a certain amount of tokens issued by the contract over a time period.
+レート制限は、実質的な変更を停止するか、または承認を必要とします。
+例えば、預金者は一定期間（例えば、1日に最大100ether）の一定の預金額または一定割合の預金を引き出すことが許可されているだけで、
+その期間の追加引き出しは失敗するか、何らかの特別な承認が必要となる 。
+またはレート制限は、期間内に発行された一定量のトークンのみで、コントラクトレベルで行うことができます。
 
-[Example](https://gist.github.com/PeterBorah/110c331dca7d23236f80e69c83a9d58c#file-circuitbreaker-sol)
+[例](https://gist.github.com/PeterBorah/110c331dca7d23236f80e69c83a9d58c#file-circuitbreaker-sol)
 
-### Contract Rollout
+### コントラクトロールアウト
 
-Contracts should have a substantial and prolonged testing period - before substantial money is put at risk.
+資金が危険にさらされる前に、コントラクトには相当の長期間のテストが必要です。
 
-At minimum, you should:
+最低限やるべきこと:
 
-- Have a full test suite with 100% test coverage (or close to it)
-- Deploy on your own testnet
-- Deploy on the public testnet with substantial testing and bug bounties
-- Exhaustive testing should allow various players to interact with the contract at volume
-- Deploy on the mainnet in beta, with limits to the amount at risk
+- 100%のテストカバレッジを持つ完全なテストスイートの作成
+- 独自のテストネットに展開する
+- テストとバグバウンティプログラムを組みパブリックなテストネットにデプロイ
+- 徹底的なテストは、様々なプレイヤーがコントラクトとやりとりできるようにすべきである
+- ベータ版でメインネット上に展開し、リスクの大きさ制限する
 
-##### Automatic Deprecation
+##### 自動廃止
 
-During testing, you can force an automatic deprecation by preventing any actions, after a certain time period. For example, an alpha contract may work for several weeks and then automatically shut down all actions, except for the final withdrawal.
+テスト中は、特定の時間が経過した後で、アクションを防止して自動的に非推奨にすることができます。
+たとえば、アルファコントラクトは数週間働いてから、最後の取り消しを除いてすべてのアクションを自動的に停止します。
 
 ```sol
 modifier isActive() {
@@ -196,31 +226,31 @@ function withdraw() public {
 }
 
 ```
-##### Restrict amount of Ether per user/contract
+##### ユーザー/コントラクト毎のEtherの量を制限する
 
-In the early stages, you can restrict the amount of Ether for any user (or for the entire contract) - reducing the risk.
+初期段階では、あらゆるユーザー（またはコントラクト全体）のEtherの量を制限して、リスクを削減することができます。
 
-### Bug Bounty Programs
+### バグバウンティプログラム
 
-Some tips for running bounty programs:
+バウンティプログラムを実行するためのヒント:
 
-- Decide which currency bounties will be distributed in (BTC and/or ETH)
-- Decide on an estimated total budget for bounty rewards
-- From the budget, determine three tiers of rewards:
-  - smallest reward you are willing to give out
-  - highest reward that's usually awardable
-  - an extra range to be awarded in case of very severe vulnerabilities
-- Determine who the bounty judges are (3 may be ideal typically)
-- Lead developer should probably be one of the bounty judges
-- When a bug report is received, the lead developer, with advice from judges, should evaluate the severity of the bug
-- Work at this stage should be in a private repo, and the issue filed on Github
-- If it's a bug that should be fixed, in the private repo, a developer should write a test case, which should fail and thus confirm the bug
-- Developer should implement the fix and ensure the test now passes; writing additional tests as needed
-- Show the bounty hunter the fix; merge the fix back to the public repo is one way
-- Determine if bounty hunter has any other feedback about the fix
-- Bounty judges determine the size of the reward, based on their evaluation of both the *likelihood* and *impact* of the bug.
-- Keep bounty participants informed throughout the process, and then strive to avoid delays in sending them their reward
+- どの通貨(BTC,ETHなど)の奨励金が分配されるかを決定する
+- バウンティ報酬の推定総予算を決定する
+- 予算から、3段階の報酬を決定します。
+   - あなたが喜んで提供している最小の報酬
+   - 通常は報酬の高い報酬
+   - 非常に重大な脆弱性の場合に付与される余分な範囲
+- 賞金の裁判官が誰であるかを決定する（3つは理想的かもしれない）
+- 鉛の開発者はおそらく賞金の裁判官の1人であるべきです
+- バグレポートが受信されると、主任開発者は、審査員の助言を得て、バグの重大度を評価する必要があります
+- この段階での作業はプライベートレポにする必要があり、問題はGithub
+- 修正する必要があるバグの場合、プライベートレポでは、開発者はテストケースを作成する必要があります。テストケースは失敗し、バグを確認する必要があります
+- 開発者は修正プログラムを実装し、今すぐテストに合格する必要があります。必要に応じて追加のテストを書く
+- バウンティハンターに修正を表示する。パブリック・リポジトリに修正をマージすることは1つの方法です
+- バウンティハンターが修正に関する他のフィードバックを持っているかどうかを判断する
+- 賞金裁判官は、バグの*可能性*と*影響*の両方の評価に基づいて、報酬のサイズを決定します。
+- 賞金を受け取った参加者にその過程を通して情報を提供し、報酬を送ることの遅れを避けるために努力する
 
-For an example of the three tiers of rewards, see [Ethereum's Bounty Program](https://bounty.ethereum.org):
+報酬の3段階の例については、[Ethereum's Bounty Program]（https://bounty.ethereum.org）を参照してください。
 
-> The value of rewards paid out will vary depending on severity of impact. Rewards for minor 'harmless' bugs start at 0.05 BTC. Major bugs, for example leading to consensus issues, will be rewarded up to 5 BTC. Much higher rewards are possible (up to 25 BTC) in case of very severe vulnerabilities.
+> 払い出される報酬の価値は、影響の重大さによって異なります。 マイナーな「無害」バグの報酬は0.05BTCから始まります。 例えばコンセンサスの問題につながる主要なバグは、最大で5 BTCまで報酬を受けるでしょう。 非常に重大な脆弱性の場合、より高い報酬（最大25 BTC）が可能です。

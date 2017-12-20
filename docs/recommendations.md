@@ -1,20 +1,24 @@
-This page demonstrates a number of solidity patterns which should generally be followed when writing smart contracts.
+このページでは、スマートコントラクトを書くときに一般的に従うべきいくつかのパターンを示しています。
 
-## Protocol specific recommendations
+## プロトコル固有の推奨事項
 
 ### <!-- -->
 
-The following recommendations apply to the development of any contract system on Ethereum.
+以下の推奨事項は、Ethereum上の契約システムの開発に適用されます。
 
-## External Calls
+## 外部コール
 
-### Use caution when making external calls
+### 外部コールを行う時は注意する
 
-Calls to untrusted contracts can introduce several unexpected risks or errors. External calls may execute malicious code in that contract _or_ any other contract that it depends upon. As such, every external call should be treated as a potential security risk. When it is not possible, or undesirable to remove external calls, use the recommendations in the rest of this section to minimize the danger.
+信頼されていないコントラクトを呼び出すと、いくつかの予期しないリスクやエラーが発生する可能性があります。
+外部呼び出しは、その契約で悪意のあるコードを実行する可能性があります。
+したがって、すべての外部コールは潜在的なセキュリティリスクとして扱う必要があります。
+外部コールを取り除くことができない、または望ましくない場合は、このセクションの残りのセクションの推奨事項を使用して危険を最小限に抑えてください。
 
-### Mark untrusted contracts
+### 信用できないコントラクトにマークをつける
 
-When interacting with external contracts, name your variables, methods, and contract interfaces in a way that makes it clear that interacting with them is potentially unsafe. This applies to your own functions that call external contracts.
+外部コントラクトと対話するときは、変数、メソッド、およびコントラクト・インターフェースに、それらとの相互作用が潜在的に危険なものであることを明確にするような名前を付けます。
+これは、外部コントラクトを呼び出す独自の関数に適用されます。
 
 ```sol
 // bad
@@ -33,44 +37,46 @@ function makeUntrustedWithdrawal(uint amount) {
 }
 ```
 
+### 外部コール後に制御フローを仮定しない
 
-### Don't make control flow assumptions after external calls
+*raw calls* (`someAddress.call()`) や *contract calls* (`ExternalContract.someMethod()`)の
+どちらを使用する場合でも、悪質なコードが実行される可能性があるとします。
 
-Whether using *raw calls* (of the form `someAddress.call()`) or *contract calls* (of the form `ExternalContract.someMethod()`), assume that malicious code might execute. Even if `ExternalContract` is not malicious, malicious code can be executed by any contracts *it* calls. 
+外部コントラクトが悪意のあるものではないとしても、それが呼び出すすべてのコントラクトによって悪質なコードが実行される可能性があります。
 
-One particular danger is malicious code may hijack the control flow, leading to race conditions. (See [Race Conditions](https://github.com/ConsenSys/smart-contract-best-practices/#race-conditions) for a fuller discussion of this problem).
+特に危険なのは、悪質なコードが制御フローを乗っ取って競合状態に陥ることです。
+(この問題の詳細な議論については、[Race Conditions](https://github.com/ConsenSys/smart-contract-best-practices/#race-conditions)を参照してください)
 
-If you are making a call to an untrusted external contract, *avoid state changes after the call*.
+あなたが信頼されていない外部コントラクトをコールしているなら、コール後にステートの変更を避けてください。
 
-### Be aware of the tradeoffs between `send()`, `transfer()`, and `call.value()()`
+### `send()`, `transfer()`, `call.value()()`の間のトレードオフに注意する
 
-When sending ether be aware of the relative tradeoffs between the use of
-`someAddress.send()`, `someAddress.transfer()`, and `someAddress.call.value()()`.
+etherを送信する方法として
+`someAddress.send()`, `someAddress.transfer()`, `someAddress.call.value()()`などがあります。
 
-- `someAddress.send()`and `someAddress.transfer()` are considered *safe* against [reentrancy](#reentrancy).
-    While these methods still trigger code execution, the called contract is
-    only given a stipend of 2,300 gas which is currently only enough to log an
-    event.
-- `x.transfer(y)` is equivalent to `require(x.send(y));`, it will automatically revert if the send fails.
-- `someAddress.call.value(y)()` will send the provided ether and trigger code execution.  
-    The executed code is given all available gas for execution making this type of value transfer *unsafe* against reentrancy.
+- `someAddress.send()`と`someAddress.transfer()`はリエントラント(再入可能)性に対して安全と見なされます。
+  これらのメソッドはコードを実行しますが、呼び出されるコントラクトには2,300ガスの義務のみが与えられ、現在はイベントを記録するのに十分です。
+  
+- `x.transfer(y)` は `require(x.send(y));`と同じで、送信が失敗すると元の状態に戻ります。
+- `someAddress.call.value(y)()`は、提供されたetherとトリガーコードを送信します。
+  実行されたコードには利用できるすべてのガスが与えられ、リエントラント性に対して安全ではありません。
 
-Using `send()` or `transfer()` will prevent reentrancy but it does so at the cost of being incompatible with any contract whose fallback function requires more than 2,300 gas. It is also possible to use `someAddress.call.value(ethAmount).gas(gasAmount)()` to forward a custom amount of gas.
+`send()`や `transfer()`を使うとリエントラントを防ぐことができますが、フォールバック機能が2,300を超えるガスを必要とする契約と互換性がないという犠牲を払って行います。
+また、`someAddress.call.value(ethAmount).gas(gasAmount)()`を使ってカスタム量のガスを転送することもできます。
 
-One pattern that attempts to balance this trade-off is to implement both
-a [*push* and *pull*](#favor-pull-over-push-payments) mechanism, using `send()` or `transfer()`
-for the *push* component and `call.value()()` for the *pull* component.
+このトレードオフのバランスを取る1つのパターンは、両方を実装することです。
+`send()`または `transfer()`を使って、プッシュコンポーネントの場合は `call.value()()`を使用します。
 
-It is worth pointing out that exclusive use of `send()` or `transfer()` for value transfers
-does not itself make a contract safe against reentrancy but only makes those
-specific value transfers safe against reentrancy.
+valueの送信に `send()`や `transfer() 'を排他的に使用しても、リエントラントに対しては安全ではなく、
+特定のvalueを再入可能で安全にするということだけを指摘しておきましょう。
 
+### 外部呼び出しのエラー処理
 
-### Handle errors in external calls
+Solidityは、 `address.call()`、 `address.callcode()`、 `address.delegatecall()`、 `address.send()`のような生のアドレスで動作する低レベル呼び出しメソッドを提供します。
+これらの低レベルメソッドは決して例外をスローしませんが、呼び出しが例外を検出した場合は `false`を返します。
+一方、 `ExternalContract.doSomething()`などのコントラクト呼び出しは `doSomething()`がスローされると自動的にスローを伝播します(例えば、 `ExternalContract.doSomething()`も `throw`)。
 
-Solidity offers low-level call methods that work on raw addresses: `address.call()`, `address.callcode()`, `address.delegatecall()`, and `address.send()`. These low-level methods never throw an exception, but will return `false` if the call encounters an exception. On the other hand, *contract calls* (e.g., `ExternalContract.doSomething()`) will automatically propagate a throw (for example, `ExternalContract.doSomething()` will also `throw` if `doSomething()` throws).
-
-If you choose to use the low-level call methods, make sure to handle the possibility that the call will fail, by checking the return value.
+低レベルのコールメソッドを使用する場合は、戻り値をチェックしてコールが失敗する可能性を処理してください。
 
 ```sol
 // bad
@@ -87,9 +93,13 @@ ExternalContract(someAddress).deposit.value(100);
 ```
 
 
-### Favor *pull* over *push* for external calls
+### 外部呼び出しが失敗した場合のリスクヘッジ
 
-External calls can fail accidentally or deliberately. To minimize the damage caused by such failures, it is often better to isolate each external call into its own transaction that can be initiated by the recipient of the call. This is especially relevant for payments, where it is better to let users withdraw funds rather than push funds to them automatically. (This also reduces the chance of [problems with the gas limit](https://github.com/ConsenSys/smart-contract-best-practices/#dos-with-block-gas-limit).)  Avoid combining multiple `send()` calls in a single transaction.
+外部呼び出しが誤ってまたは意図的に失敗する可能性があります。
+このような障害によって引き起こされる被害を最小限に抑えるには、各外部呼び出しを、受信者が開始できる独自のトランザクションに分離する方がよい場合があります。
+これは、特に支払いに関連します。ユーザーが自動的に資金を押し出すのではなく、資金を引き出すことをお勧めします。
+(これにより、[ガスリミット問題](https://github.com/ConsenSys/smart-contract-best-practices/#dos-with-block-gas-limit)の可能性も減ります。)
+単一のトランザクションで複数の`send()`呼び出しを組み合わせることは避けてください。
 
 ```sol
 // bad
@@ -134,36 +144,48 @@ contract auction {
 }
 ```
 
-## Don't assume contracts are created with zero balance
+## 新たにデプロイされたコントラクトの残高が0と決めつけない
 
-An attacker can send wei to the address of a contract before it is created.  Contracts should not assume that its initial state contains a zero balance.  See [issue 61](https://github.com/ConsenSys/smart-contract-best-practices/issues/61) for more details.
+デプロイ前にコントラクトアドレスに対してweiを送信できます。
+コントラクトは初期状態に残高0が含まれていると想定すべきではありません。
+詳細は[issue 61](https://github.com/ConsenSys/smart-contract-best-practices/issues/61)を参照してください。
 
-## Remember that on-chain data is public
+## オンチェーンのデータは公開されていることを忘れない
 
-Many applications require submitted data to be private up until some point in time in order to work. Games (eg. on-chain rock-paper-scissors) and auction mechanisms (eg. sealed-bid second-price auctions) are two major categories of examples. If you are building an application where privacy is an issue, take care to avoid requiring users to publish information too early.
+多くのアプリケーションでは、データをある時点まで非公開にする必要があります。
+ゲーム(例えば、チェーン上の岩石 - はさみ)とオークションメカニズム(例えば、入札価格の第二価格オークション)は、2つの主要なカテゴリの例です。
+プライバシーが問題となるアプリケーションを構築する場合は、ユーザーに情報を早期に公開しないように注意してください。
 
-Examples:
+例:
 
-* In rock paper scissors, require both players to submit a hash of their intended move first, then require both players to submit their move; if the submitted move does not match the hash throw it out.
-* In an auction, require players to submit a hash of their bid value in an initial phase (along with a deposit greater than their bid value), and then submit their action bid value in the second phase.
-* When developing an application that depends on a random number generator, the order should always be (1) players submit moves, (2) random number generated, (3) players paid out. The method by which random numbers are generated is itself an area of active research; current best-in-class solutions include Bitcoin block headers (verified through http://btcrelay.org), hash-commit-reveal schemes (ie. one party generates a number, publishes its hash to "commit" to the value, and then reveals the value later) and [RANDAO](http://github.com/randao/randao).
-* If you are implementing a frequent batch auction, a hash-commit scheme is also desirable.
+* じゃんけんでは、両方のプレイヤーに、最初に意図した移動のハッシュを提出する必要があります。送信された移動がハッシュと一致しない場合、例外をthrowします。
+* オークションでは、プレイヤーに初期段階で入札額のハッシュ値を提示し(入札額を超える入金額とともに)、第2段階でアクション入札額を提示する必要があります。
+* 乱数ジェネレータに依存するアプリケーションを開発する場合は、(1)プレイヤーが移動を提出する、(2)乱数が生成される、(3)プレイヤーが支払う順序が常に必要です。乱数が生成される方法自体は、活発な研究の領域です。現在のクラス最高のソリューションには、Bitcoinブロックヘッダー(http://btcrelay.orgで検証済み)、ハッシュコミット公開スキーム(すなわち、一方の当事者が数値を生成し、そのハッシュを公開して値にコミットし、 後でその値を明らかにする)と[RANDAO](http://github.com/randao/randao)。
+* 頻繁なバッチオークションを実装する場合、ハッシュコミットスキームも望ましいです。
 
-## In 2-party or N-party contracts, beware of the possibility that some participants may "drop offline" and not return
+## 2者契約またはN者契約では、一部の参加者が「オフラインになる」可能性があることに注意する
 
-Do not make refund or claim processes dependent on a specific party performing a particular action with no other way of getting the funds out. For example, in a rock-paper-scissors game, one common mistake is to not make a payout until both players submit their moves; however, a malicious player can "grief" the other by simply never submitting their move - in fact, if a player sees the other player's revealed move and determines that they lost, they have no reason to submit their own move at all. This issue may also arise in the context of state channel settlement. When such situations are an issue, (1) provide a way of circumventing non-participating participants, perhaps through a time limit, and (2) consider adding an additional economic incentive for participants to submit information in all of the situations in which they are supposed to do so.
+特定の要求を行っている特定の当事者に応じて払い戻しをしたり、他の方法で資金を引き出すことはできません。 
+例えば、じゃんけんでは、共通の間違いの1つは、両方のプレーヤーが自分の動きを決定するまで支払いを行わないことです。
+しかし、悪意のあるプレイヤーは、決して移動を提出しないことによって他のプレイヤーを「悲しませる」ことができます。
+実際に、プレイヤーが他のプレイヤーの明らかな動きを見て、失ったと判断した場合、この問題はステートの決済チャネルのコンテキストでも発生する可能性があります。
+そのような状況が問題である場合、(1)おそらく期限を過ぎて参加していない参加者を迂回させる方法を提供する、(2)参加者が参加しているすべての状況で情報を提出するための追加の経済的インセンティブを加えることを検討するそうするはずです。
 
-## Solidity specific recommendations
+## Solidity特有の推奨事項
 
 ### <!-- -->
 
-The following recommendations are specific to Solidity, but may also be instructive for developing smart contracts in other languages.
+以下の推奨事項は、Solidity固有のものですが、他の言語でスマートコントラクトを作成するための参考にもなります。
 
-## Enforce invariants with `assert()`
+## `assert()`で不変量を強制する
 
-An assert guard triggers when an assertion fails - such as an invariant property changing. For example, the token to ether issuance ratio, in a token issuance contract, may be fixed. You can verify that this is the case at all times with an `assert()`. Assert guards should often be combined with other techniques, such as pausing the contract and allowing upgrades. (Otherwise, you may end up stuck, with an assertion that is always failing.)
+アサーションが失敗した場合（不変プロパティの変更など）、アサートガードがトリガーされます。
+例えば、トークン発行契約におけるトークンとetherの発行比率は固定されていてもよい。
+これが常に `assert（）`の場合に当てはまることを確認することができます。
+アサートガードは、契約を一時停止し、アップグレードを許可するなど、他の手法と組み合わせることがよくあります。
+（でなければあなたはいつも失敗しているアサーションで立ち往生するかもしれません。）
 
-Example:
+例:
 
 ```sol
 contract Token {
@@ -178,25 +200,29 @@ contract Token {
 }
 ```
 
-Note that the assertion is *not* a strict equality of the balance because the contract can be [forcibly sent ether](#ether-forcibly-sent) without going through the `deposit()` function!
+アサーションは、契約が `deposit（）`関数を経由せずに強制的にetherを送信することができるので、残高が厳密にイコールではないことに注意してください。
 
+## `assert()` と `require()` プロパティを使う (Solidity >= 0.4.10)
 
-## Use `assert()` and `require()` properly
+Solidity 0.4.10から`assert()`と`require()`が導入されました。
+`require（condition）`は入力の検証に使用されることを意味します。
+これはユーザの入力に対して実行する必要があり、条件がfalseの場合に元に戻ります。
+`assert（condition）`は、条件がfalseの場合でも元に戻りますが、内部エラーや契約が無効な状態になったかどうかを確認するためにのみ使用してください。
+このパラダイムに従うと、正式な分析ツールは、無効なオペコードに到達することができないことを検証することができます。
+つまり、コード内のインバリアントが違反されていないことと、コードが正式に検証されたことを意味します。
 
-In Solidity 0.4.10 `assert()` and `require()` were introduced. `require(condition)` is meant to be used for input validation, which should be done on any user input, and reverts if the condition is false. `assert(condition)` also reverts if the condition is false but should be used only for invariants: internal errors or to check if your contract has reached an invalid state. Following this paradigm allows formal analysis tools to verify that the invalid opcode can never be reached: meaning no invariants in the code are violated and that the code is formally verified.
+## 整数除算での丸めに注意する
 
-## Beware rounding with integer division
+すべての整数の除算は、最も近い整数に切り下げられます。さらに精度が必要な場合は、乗数を使用するか、分子と分母の両方を格納することを検討してください。
 
-All integer division rounds down to the nearest integer. If you need more precision, consider using a multiplier, or store both the numerator and denominator.
-
-(In the future, Solidity will have a fixed-point type, which will make this easier.)
+(将来的には、Solidityは固定小数点型を使用するため、これは簡単になります)
 
 ```sol
 // bad
-uint x = 5 / 2; // Result is 2, all integer divison rounds DOWN to the nearest integer
+uint x = 5 / 2; // 結果は2で、すべての整数除算がDOWNから最も近い整数に丸められます。
 ```
 
-Using a multiplier prevents rounding down, this multiplier needs to be accounted for when working with x in the future:
+乗数を使用すると四捨五入を防ぐことができます。この乗数は、将来xで作業するときに考慮する必要があります。
 
 ```sol
 // good
@@ -204,30 +230,35 @@ uint multiplier = 10;
 uint x = (5 * multiplier) / 2;
 ```
 
-Storing the numerator and denominator means you can calculate the result of `numerator/denominator` off-chain:
+分子と分母を格納することは、 `分子/分母`の結果をオフチェーンで計算できることを意味します:
 ```sol
 // good
 uint numerator = 5;
 uint denominator = 2;
 ```
 
-## Remember that Ether can be forcibly sent to an account
+## Etherは強制的にアカウントに送ることが出来る
 
-Beware of coding an invariant that strictly checks the balance of a contract.
+厳密にコントラクトの残高をチェックする不変量をコーディングすることに注意してください。
 
-An attacker can forcibly send wei to any account and this cannot be prevented (not even with a fallback function that does a `revert()`).
+攻撃者は任意のアカウントにweiを強制的に送ることができ、これは防ぐことができません（ `revert（）`を実行するフォールバック関数でさえも）。
 
-The attacker can do this by creating a contract, funding it with 1 wei, and invoking
-`selfdestruct(victimAddress)`.  No code is invoked in `victimAddress`, so it
-cannot be prevented.
+攻撃者はコントラクトを作成し、1weiで資金を調達し、 `selfdestruct（victimAddress）`を呼び出すことでこれを行うことができます。
+`victimAddress`ではコードが呼び出されないので、防ぐことはできません。
 
-## Be aware of the tradeoffs between abstract contracts and interfaces
+## 抽象的な契約とインタフェースの間のトレードオフに注意してください
 
-Both interfaces and abstract contracts provide one with a customizable and re-usable approach for smart contracts. Interfaces, which were introduced in Solidity 0.4.11, are similar to abstract contracts but cannot have any functions implemented. Interfaces also have limitations such as not being able to access storage or inherit from other interfaces which generally makes abstract contracts more practical. Although, interfaces are certainly useful for designing contracts prior to implementation. Additionally, it is important to keep in mind that if a contract inherits from an abstract contract it must implement all non-implemented functions via overriding or it will be abstract as well.
+インタフェースと抽象契約の両方は、スマートコントラクトのためのカスタマイズ可能で再利用可能なアプローチを提供します。
+Solidity 0.4.11で導入されたインタフェースは、抽象的な契約に似ていますが、実装されている機能を持つことはできません。
+インタフェースには、ストレージにアクセスできない、または抽象コントラクトをより実用的にする他のインタフェースから継承するなどの制限もあります。
+しかし、インタフェースは実装前に契約を設計する上では確かに有用です。
+さらに、契約が抽象コントラクトから継承する場合は、オーバーライドを使用して実装されていないすべての機能を実装する必要があること、または抽象的であることにも留意することが重要です。
 
-## Keep fallback functions simple
+## fallback関数をシンプルに保つ
 
-[Fallback functions](http://solidity.readthedocs.io/en/latest/contracts.html#fallback-function) are called when a contract is sent a message with no arguments (or when no function matches), and only has access to 2,300 gas when called from a `.send()` or `.transfer()`. If you wish to be able to receive Ether from a `.send()` or `.transfer()`, the most you can do in a fallback function is log an event. Use a proper function if a computation or more gas is required.
+[Fallback functions](http://solidity.readthedocs.io/en/latest/contracts.html#fallback-function)は、引数に引数なしのメッセージが送信されたとき（または関数が一致しないとき）に呼び出され、 `.send（）`または `.transfer（）`から呼び出されたとき2,300個のガスにアクセスできます。
+あなたが `.send（）`や `.transfer（）`からEtherを受信できるようにしたいのであれば、fallback関数でできるのはイベントを記録することです。
+計算以上のガスが必要な場合は、適切な関数を使用してください。
 
 ```sol
 // bad
@@ -239,9 +270,13 @@ function deposit() payable external { balances[msg.sender] += msg.value; }
 function() payable { LogDepositReceived(msg.sender); }
 ```
 
-## Explicitly mark visibility in functions and state variables
+## 関数と状態変数の可視性を明示的にマークする
 
-Explicitly label the visibility of functions and state variables. Functions can be specified as being `external`, `public`, `internal` or `private`. Please understand the differences between them, for example, `external` may be sufficient instead of `public`. For state variables, `external` is not possible. Labeling the visibility explicitly will make it easier to catch incorrect assumptions about who can call the function or access the variable.
+関数と状態変数の可視性を明示的にラベル付けする。
+関数は `external`、` public`、 `internal`、` private`のように指定できます。
+それらの違いを理解してください。たとえば、 `public`ではなく` external`で十分でしょう。
+状態変数については、「外部」は不可能である。
+可視性を明示的にラベルすると、関数を呼び出すことができるか、変数にアクセスできるかについての間違った前提を簡単にキャッチできます。
 
 ```sol
 // bad
@@ -265,9 +300,11 @@ function internalAction() internal {
 }
 ```
 
-## Lock pragmas to specific compiler version
+## プラグマを特定のコンパイラのバージョンにロックする
 
-Contracts should be deployed with the same compiler version and flags that they have been tested the most with. Locking the pragma helps ensure that contracts do not accidentally get deployed using, for example, the latest compiler which may have higher risks of undiscovered bugs. Contracts may also be deployed by others and the pragma indicates the compiler version intended by the original authors.
+コントラクトは、最もよくテストされたものと同じコンパイラ・バージョンとフラグでデプロイする必要があります。
+プラグマをロックすると、未知のバグのリスクが高い最新のコンパイラなどを使用して、契約が誤って展開されないようになります。
+コントラクトは他の人によっても展開される可能性があり、プラグマはオリジナルの著者が意図したコンパイラのバージョンを示します。
 
 ```sol
 // bad
@@ -278,9 +315,10 @@ pragma solidity ^0.4.4;
 pragma solidity 0.4.4;
 ```
 
-## Differentiate functions and events
+## 関数とイベントの命名規則
 
-Favor capitalization and a prefix in front of events (we suggest *Log*), to prevent the risk of confusion between functions and events. For functions, always start with a lowercase letter, except for the constructor.
+関数とイベントの混乱の危険を避けるため、イベント名は大文字で始め、大文字の前に接頭辞を付ける（*Log*を推奨する）。
+関数の場合はコンストラクタを除き、常に小文字で始めます。
 
 ```sol
 // bad
@@ -292,13 +330,16 @@ event LogTransfer() {}
 function transfer() external {}
 ```
 
-## Prefer newer Solidity constructs
+## より新しいSolidity構造を用いる
 
-Prefer constructs/aliases such as `selfdestruct` (over `suicide`) and `keccak256` (over `sha3`).  Patterns like `require(msg.sender.send(1 ether))` can also be simplified to using `transfer()`, as in `msg.sender.transfer(1 ether)`.
+`selfdestruct`（` suicide`）と `keccak256`（` sha3`以上）のような構造体/エイリアスが好ましいです。
+`require（msg.sender.send（1 ether））`のようなパターンは `msg.sender.transfer（1 ether）`のように `transfer（）`を使って単純化することもできます。
 
-## Be aware that 'Built-ins' can be shadowed
+## ビルトインはシャドーイング出来ることに注意する
 
-It is currently possible to [shadow](https://en.wikipedia.org/wiki/Variable_shadowing) built-in globals in Solidity. This allows contracts to override the functionality of built-ins such as `msg` and `revert()`. Although this [is intended](https://github.com/ethereum/solidity/issues/1249), it can mislead users of a contract as to the contract's true behavior.
+Solidityの組み込みグローバルを[shadow]（https://en.wikipedia.org/wiki/Variable_shadowing）することは現在可能です。
+これにより、契約は `msg`や` revert（） `などの組み込み関数の機能をオーバーライドすることができます。
+これは意図されていますが（https://github.com/ethereum/solidity/issues/1249）、コントラクトの真の振る舞いに関してユーザーを誤解させる可能性があります。
 
 ```sol
 contract PretendingToRevert {
@@ -312,11 +353,13 @@ contract ExampleContract is PretendingToRevert {
 }
 ```
 
-Contract users (and auditors) should be aware of the full smart contract source code of any application they intend to use. 
+ユーザーは、使用するアプリケーションのコントラクトコードを認識している必要があります。
 
-## Avoid using `tx.origin`
+## `tx.origin`を使わない
 
-Never use `tx.origin` for authorization, another contract can have a method which will call your contract (where the user has some funds for instance) and your contract will authorize that transaction as your address is in `tx.origin`.
+`tx.origin`を絶対に使用しないでください。
+あなたのコントラクトにcallする方法（例えば、ユーザーに資金がある場合）と、
+あなたのアドレスが`tx.origin`にあるようにトランザクションを承認する方法があります。
 
 ```
 pragma solidity 0.4.18;
@@ -353,18 +396,21 @@ contract AttackingContract {
 }
 ```
 
-You should use `msg.sender` for authorization (if another contract calls your contract `msg.sender` will be the address of the contract and not the address of the user who called the contract).
+承認のために `msg.sender`を使用するべきです
+（別のコントラクトがあなたのコントラクトを呼び出す場合、` msg.sender`はコントラクトのアドレスであり、ユーザーのアドレスではありません）。
 
-You can read more about it here: [Solidity docs](https://solidity.readthedocs.io/en/develop/security-considerations.html#tx-origin)
+詳細はこちら: [Solidity docs](https://solidity.readthedocs.io/en/develop/security-considerations.html#tx-origin)
 
-Besides the issue with authorization, there is a chance that `tx.origin` will be removed from the Ethereum protocol in the future, so code that uses `tx.origin` won't be compatible with future releases [Vitalik: 'Do NOT assume that tx.origin will continue to be usable or meaningful.'](https://ethereum.stackexchange.com/questions/196/how-do-i-make-my-dapp-serenity-proof/200#200)
+また、将来 `tx.origin` がEthereumプロトコルから削除される可能性があるので、 `tx.origin`を使用するコードは将来のリリースと互換性がありません。
+[Vitalik：'tx.originは引き続き使用可能または意味のあるものと仮定しないでください。]（https://ethereum.stackexchange.com/questions/196/how-do-i-make-my-dapp-serenity-proof/200＃200）
 
-It's also worth mentioning that by using `tx.origin` you're limiting interoperability between contracts because the contract that uses tx.origin cannot be used by another contract as a contract can't be the `tx.origin`.
+`tx.origin`を使うコントラクトは他のコントラクトで使うことができないので、
+コントラクト間の相互運用性を制限していることにも言及する価値があります。
 
-## Deprecated/historical recommendations
+## 廃止予定/過去の推奨事項
 
-These are recommendations which are no longer relevant due to changes in the protocol or improvements to solidity. They are recorded here for posterity and awareness. 
+これらは、プロトコルの変更や強固性の改善によりもはや関連性のない推奨事項です。後世のためにここに記録されています。
 
-### Beware division by zero (Solidity < 0.4)
+### ゼロによる除算に注意 (Solidity < 0.4)
 
-Prior to version 0.4, Solidity [returns zero](https://github.com/ethereum/solidity/issues/670) and does not `throw` an exception when a number is divided by zero. Ensure you're running at least version 0.4.
+バージョン0.4以前のSolidityでは、数値をゼロで割ったときに例外を「throw」しません。 バージョン0.4以上で動作していることを確認してください。

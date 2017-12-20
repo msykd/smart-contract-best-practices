@@ -1,7 +1,4 @@
 
-
-
-
 <!DOCTYPE html>
 <html lang="en" class="no-js">
   <head>
@@ -21,7 +18,7 @@
       
         <meta name="lang:clipboard.copied" content="Copied to clipboard">
       
-        <meta name="lang:search.language" content="en">
+        <meta name="lang:search.languages" content="">
       
         <meta name="lang:search.result.none" content="No matching documents">
       
@@ -31,8 +28,10 @@
       
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
-      <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-0.17.2, mkdocs-material-2.2.0">
+      
+        <link rel="shortcut icon" href="../images/favicon.ico">
+      
+      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.12.1">
     
     
       
@@ -40,14 +39,17 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application.5d3fffba.css">
+      <script src="../assets/javascripts/modernizr-e826f8942a.js"></script>
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application-04ea671600.css">
       
     
     
-      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
-    
-    
       
+        
+        
+        
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
         <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
       
@@ -58,6 +60,9 @@
     
     
   </head>
+  
+  
+  
   
     <body>
   
@@ -79,7 +84,7 @@
       <div class="md-flex__cell md-flex__cell--shrink">
         <a href="https://github.com/ConsenSys/smart-contract-best-practices" title="Ethereum Smart Contract Best Practices" class="md-header-nav__button md-logo">
           
-            <i class="md-icon"></i>
+            <i class="md-icon md-icon--home"></i>
           
         </a>
       </div>
@@ -87,24 +92,19 @@
         <label class="md-icon md-icon--menu md-header-nav__button" for="drawer"></label>
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+        <span class="md-flex__ellipsis md-header-nav__title">
           
             
-              <span class="md-header-nav__topic">
-                Ethereum Smart Contract Best Practices
-              </span>
-              <span class="md-header-nav__topic">
-                Recommendations for Smart Contract Security in Solidity
-              </span>
+              
             
+            Recommendations for Smart Contract Security in Solidity
           
-        </div>
+        </span>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
         
+          <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
           
-            <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
-            
 <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="search"></label>
   <div class="md-search__inner">
@@ -125,7 +125,6 @@
     </div>
   </div>
 </div>
-          
         
       </div>
       
@@ -137,7 +136,7 @@
   
 
 
-  <a href="https://github.com/ConsenSys/smart-contract-best-practices/" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/ConsenSys/smart-contract-best-practices" title="Go to repository" class="md-source" data-md-source="github">
     
       <div class="md-source__icon">
         <svg viewBox="0 0 24 24" width="24" height="24">
@@ -159,7 +158,6 @@
     
     <div class="md-container">
       
-        
       
       
       <main class="md-main">
@@ -173,7 +171,7 @@
   <label class="md-nav__title md-nav__title--site" for="drawer">
     <span class="md-nav__button md-logo">
       
-        <i class="md-icon"></i>
+        <i class="md-icon md-icon--home"></i>
       
     </span>
     Ethereum Smart Contract Best Practices
@@ -186,7 +184,7 @@
   
 
 
-  <a href="https://github.com/ConsenSys/smart-contract-best-practices/" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/ConsenSys/smart-contract-best-practices" title="Go to repository" class="md-source" data-md-source="github">
     
       <div class="md-source__icon">
         <svg viewBox="0 0 24 24" width="24" height="24">
@@ -886,15 +884,15 @@ specific value transfers safe against reentrancy.</p>
 <p>If you choose to use the low-level call methods, make sure to handle the possibility that the call will fail, by checking the return value.</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
 <span class="n">someAddress</span><span class="p">.</span><span class="nb">send</span><span class="p">(</span><span class="mi">55</span><span class="p">);</span>
-<span class="n">someAddress</span><span class="p">.</span><span class="nb">call</span><span class="p">.</span><span class="nb">value</span><span class="p">(</span><span class="mi">55</span><span class="p">)();</span> <span class="c1">// this is doubly dangerous, as it will forward all remaining gas and doesn&#39;t check for result</span>
-<span class="n">someAddress</span><span class="p">.</span><span class="nb">call</span><span class="p">.</span><span class="nb">value</span><span class="p">(</span><span class="mi">100</span><span class="p">)(</span><span class="kt">bytes4</span><span class="p">(</span><span class="nf">sha3</span><span class="p">(</span><span class="s">&quot;deposit()&quot;</span><span class="p">)));</span> <span class="c1">// if deposit throws an exception, the raw call() will only return false and transaction will NOT be reverted</span>
+<span class="n">someAddress</span><span class="p">.</span><span class="nb">call</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="mi">55</span><span class="p">)();</span> <span class="c1">// this is doubly dangerous, as it will forward all remaining gas and doesn&#39;t check for result</span>
+<span class="n">someAddress</span><span class="p">.</span><span class="nb">call</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="mi">100</span><span class="p">)(</span><span class="kt">bytes4</span><span class="p">(</span><span class="nf">sha3</span><span class="p">(</span><span class="s">&quot;deposit()&quot;</span><span class="p">)));</span> <span class="c1">// if deposit throws an exception, the raw call() will only return false and transaction will NOT be reverted</span>
 
 <span class="c1">// good</span>
 <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">someAddress</span><span class="p">.</span><span class="nb">send</span><span class="p">(</span><span class="mi">55</span><span class="p">))</span> <span class="p">{</span>
     <span class="c1">// Some failure code</span>
 <span class="p">}</span>
 
-<span class="n">ExternalContract</span><span class="p">(</span><span class="n">someAddress</span><span class="p">).</span><span class="n">deposit</span><span class="p">.</span><span class="nb">value</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+<span class="n">ExternalContract</span><span class="p">(</span><span class="n">someAddress</span><span class="p">).</span><span class="n">deposit</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
 </pre></div>
 
 <h3 id="favor-pull-over-push-for-external-calls">Favor <em>pull</em> over <em>push</em> for external calls<a class="headerlink" href="#favor-pull-over-push-for-external-calls" title="Permanent link">&para;</a></h3>
@@ -905,14 +903,14 @@ specific value transfers safe against reentrancy.</p>
     <span class="kt">uint</span> <span class="n">highestBid</span><span class="p">;</span>
 
     <span class="kd">function</span> <span class="n">bid</span><span class="p">()</span> <span class="kr">payable</span> <span class="p">{</span>
-        <span class="nb">require</span><span class="p">(</span><span class="nb">msg</span><span class="p">.</span><span class="nb">value</span> <span class="o">&gt;=</span> <span class="n">highestBid</span><span class="p">);</span>
+        <span class="n">require</span><span class="p">(</span><span class="nb">msg</span><span class="p">.</span><span class="n">value</span> <span class="o">&gt;=</span> <span class="n">highestBid</span><span class="p">);</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">highestBidder</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">highestBidder</span><span class="p">.</span><span class="nb">transfer</span><span class="p">(</span><span class="n">highestBid</span><span class="p">);</span> <span class="c1">// if this call consistently fails, no one else can bid</span>
+            <span class="n">highestBidder</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="n">highestBid</span><span class="p">);</span> <span class="c1">// if this call consistently fails, no one else can bid</span>
         <span class="p">}</span>
 
-       <span class="n">highestBidder</span> <span class="o">=</span> <span class="nb">msg</span><span class="p">.</span><span class="nb">sender</span><span class="p">;</span>
-       <span class="n">highestBid</span> <span class="o">=</span> <span class="nb">msg</span><span class="p">.</span><span class="nb">value</span><span class="p">;</span>
+       <span class="n">highestBidder</span> <span class="o">=</span> <span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">;</span>
+       <span class="n">highestBid</span> <span class="o">=</span> <span class="nb">msg</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
@@ -923,20 +921,20 @@ specific value transfers safe against reentrancy.</p>
     <span class="kd">mapping</span><span class="p">(</span><span class="kt">address</span> <span class="o">=&gt;</span> <span class="kt">uint</span><span class="p">)</span> <span class="n">refunds</span><span class="p">;</span>
 
     <span class="kd">function</span> <span class="n">bid</span><span class="p">()</span> <span class="kr">payable</span> <span class="kr">external</span> <span class="p">{</span>
-        <span class="nb">require</span><span class="p">(</span><span class="nb">msg</span><span class="p">.</span><span class="nb">value</span> <span class="o">&gt;=</span> <span class="n">highestBid</span><span class="p">);</span>
+        <span class="n">require</span><span class="p">(</span><span class="nb">msg</span><span class="p">.</span><span class="n">value</span> <span class="o">&gt;=</span> <span class="n">highestBid</span><span class="p">);</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">highestBidder</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
             <span class="n">refunds</span><span class="p">[</span><span class="n">highestBidder</span><span class="p">]</span> <span class="o">+=</span> <span class="n">highestBid</span><span class="p">;</span> <span class="c1">// record the refund that this user can claim</span>
         <span class="p">}</span>
 
-        <span class="n">highestBidder</span> <span class="o">=</span> <span class="nb">msg</span><span class="p">.</span><span class="nb">sender</span><span class="p">;</span>
-        <span class="n">highestBid</span> <span class="o">=</span> <span class="nb">msg</span><span class="p">.</span><span class="nb">value</span><span class="p">;</span>
+        <span class="n">highestBidder</span> <span class="o">=</span> <span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">;</span>
+        <span class="n">highestBid</span> <span class="o">=</span> <span class="nb">msg</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="kd">function</span> <span class="n">withdrawRefund</span><span class="p">()</span> <span class="kr">external</span> <span class="p">{</span>
-        <span class="kt">uint</span> <span class="n">refund</span> <span class="o">=</span> <span class="n">refunds</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="nb">sender</span><span class="p">];</span>
-        <span class="n">refunds</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="nb">sender</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="nb">msg</span><span class="p">.</span><span class="nb">sender</span><span class="p">.</span><span class="nb">transfer</span><span class="p">(</span><span class="n">refund</span><span class="p">);</span>
+        <span class="kt">uint</span> <span class="n">refund</span> <span class="o">=</span> <span class="n">refunds</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">];</span>
+        <span class="n">refunds</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="n">refund</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -965,9 +963,9 @@ specific value transfers safe against reentrancy.</p>
     <span class="kt">uint</span> <span class="kr">public</span> <span class="n">totalSupply</span><span class="p">;</span>
 
     <span class="kd">function</span> <span class="n">deposit</span><span class="p">()</span> <span class="kr">public</span> <span class="kr">payable</span> <span class="p">{</span>
-        <span class="n">balanceOf</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="nb">sender</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">msg</span><span class="p">.</span><span class="nb">value</span><span class="p">;</span>
-        <span class="n">totalSupply</span> <span class="o">+=</span> <span class="nb">msg</span><span class="p">.</span><span class="nb">value</span><span class="p">;</span>
-        <span class="nb">assert</span><span class="p">(</span><span class="nb">this</span><span class="p">.</span><span class="nb">balance</span> <span class="o">&gt;=</span> <span class="n">totalSupply</span><span class="p">);</span>
+        <span class="n">balanceOf</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">msg</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
+        <span class="n">totalSupply</span> <span class="o">+=</span> <span class="nb">msg</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
+        <span class="n">assert</span><span class="p">(</span><span class="nb">this</span><span class="p">.</span><span class="nb">balance</span> <span class="o">&gt;=</span> <span class="n">totalSupply</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -1004,12 +1002,12 @@ cannot be prevented.</p>
 <h2 id="keep-fallback-functions-simple">Keep fallback functions simple<a class="headerlink" href="#keep-fallback-functions-simple" title="Permanent link">&para;</a></h2>
 <p><a href="http://solidity.readthedocs.io/en/latest/contracts.html#fallback-function">Fallback functions</a> are called when a contract is sent a message with no arguments (or when no function matches), and only has access to 2,300 gas when called from a <code>.send()</code> or <code>.transfer()</code>. If you wish to be able to receive Ether from a <code>.send()</code> or <code>.transfer()</code>, the most you can do in a fallback function is log an event. Use a proper function if a computation or more gas is required.</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
-<span class="kd">function</span><span class="p">()</span> <span class="kr">payable</span> <span class="p">{</span> <span class="n">balances</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="nb">sender</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">msg</span><span class="p">.</span><span class="nb">value</span><span class="p">;</span> <span class="p">}</span>
+<span class="kd">function</span><span class="p">()</span> <span class="kr">payable</span> <span class="p">{</span> <span class="n">balances</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">msg</span><span class="p">.</span><span class="n">value</span><span class="p">;</span> <span class="p">}</span>
 
 <span class="c1">// good</span>
-<span class="kd">function</span> <span class="n">deposit</span><span class="p">()</span> <span class="kr">payable</span> <span class="kr">external</span> <span class="p">{</span> <span class="n">balances</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="nb">sender</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">msg</span><span class="p">.</span><span class="nb">value</span><span class="p">;</span> <span class="p">}</span>
+<span class="kd">function</span> <span class="n">deposit</span><span class="p">()</span> <span class="kr">payable</span> <span class="kr">external</span> <span class="p">{</span> <span class="n">balances</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">msg</span><span class="p">.</span><span class="n">value</span><span class="p">;</span> <span class="p">}</span>
 
-<span class="kd">function</span><span class="p">()</span> <span class="kr">payable</span> <span class="p">{</span> <span class="n">LogDepositReceived</span><span class="p">(</span><span class="nb">msg</span><span class="p">.</span><span class="nb">sender</span><span class="p">);</span> <span class="p">}</span>
+<span class="kd">function</span><span class="p">()</span> <span class="kr">payable</span> <span class="p">{</span> <span class="n">LogDepositReceived</span><span class="p">(</span><span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">);</span> <span class="p">}</span>
 </pre></div>
 
 <h2 id="explicitly-mark-visibility-in-functions-and-state-variables">Explicitly mark visibility in functions and state variables<a class="headerlink" href="#explicitly-mark-visibility-in-functions-and-state-variables" title="Permanent link">&para;</a></h2>
@@ -1049,11 +1047,11 @@ cannot be prevented.</p>
 <p>Favor capitalization and a prefix in front of events (we suggest <em>Log</em>), to prevent the risk of confusion between functions and events. For functions, always start with a lowercase letter, except for the constructor.</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
 <span class="kd">event</span> <span class="n">Transfer</span><span class="p">()</span> <span class="p">{}</span>
-<span class="kd">function</span> <span class="nb">transfer</span><span class="p">()</span> <span class="p">{}</span>
+<span class="kd">function</span> <span class="n">transfer</span><span class="p">()</span> <span class="p">{}</span>
 
 <span class="c1">// good</span>
 <span class="kd">event</span> <span class="n">LogTransfer</span><span class="p">()</span> <span class="p">{}</span>
-<span class="kd">function</span> <span class="nb">transfer</span><span class="p">()</span> <span class="kr">external</span> <span class="p">{}</span>
+<span class="kd">function</span> <span class="n">transfer</span><span class="p">()</span> <span class="kr">external</span> <span class="p">{}</span>
 </pre></div>
 
 <h2 id="prefer-newer-solidity-constructs">Prefer newer Solidity constructs<a class="headerlink" href="#prefer-newer-solidity-constructs" title="Permanent link">&para;</a></h2>
@@ -1061,12 +1059,12 @@ cannot be prevented.</p>
 <h2 id="be-aware-that-built-ins-can-be-shadowed">Be aware that 'Built-ins' can be shadowed<a class="headerlink" href="#be-aware-that-built-ins-can-be-shadowed" title="Permanent link">&para;</a></h2>
 <p>It is currently possible to <a href="https://en.wikipedia.org/wiki/Variable_shadowing">shadow</a> built-in globals in Solidity. This allows contracts to override the functionality of built-ins such as <code>msg</code> and <code>revert()</code>. Although this <a href="https://github.com/ethereum/solidity/issues/1249">is intended</a>, it can mislead users of a contract as to the contract's true behavior.</p>
 <div class="highlight"><pre><span></span><span class="kd">contract</span> <span class="n">PretendingToRevert</span> <span class="p">{</span>
-    <span class="kd">function</span> <span class="nb">revert</span><span class="p">()</span> <span class="kr">internal</span> <span class="kr">constant</span> <span class="p">{}</span>
+    <span class="kd">function</span> <span class="n">revert</span><span class="p">()</span> <span class="kr">internal</span> <span class="kr">constant</span> <span class="p">{}</span>
 <span class="p">}</span>
 
 <span class="kd">contract</span> <span class="n">ExampleContract</span> <span class="kr">is</span> <span class="n">PretendingToRevert</span> <span class="p">{</span>
     <span class="kd">function</span> <span class="n">somethingBad</span><span class="p">()</span> <span class="kr">public</span> <span class="p">{</span>
-        <span class="nb">revert</span><span class="p">();</span>
+        <span class="n">revert</span><span class="p">();</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -1171,9 +1169,9 @@ contract AttackingContract {
       <div class="md-footer-copyright">
         
         powered by
-        <a href="http://www.mkdocs.org">MkDocs</a>
+        <a href="http://www.mkdocs.org" title="MkDocs">MkDocs</a>
         and
-        <a href="https://squidfunk.github.io/mkdocs-material/">
+        <a href="http://squidfunk.github.io/mkdocs-material/" title="Material for MkDocs">
           Material for MkDocs</a>
       </div>
       
@@ -1185,9 +1183,10 @@ contract AttackingContract {
       
     </div>
     
-      <script src="../assets/javascripts/application.6cdc17f0.js"></script>
+      <script src="../assets/javascripts/application-946997f430.js"></script>
       
-      <script>app.initialize({version:"0.17.2",url:{base:".."}})</script>
+      
+      <script>app.initialize({version:"0.16.3",url:{base:".."}})</script>
       
     
     

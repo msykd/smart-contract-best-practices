@@ -8,10 +8,10 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="https://github.com/ConsenSys/smart-contract-best-practices/general_philosophy/">
+        <link rel="canonical" href="https://github.com/msykd/smart-contract-best-practices/general_philosophy/">
       
       
-        <meta name="author" content="ConsenSys">
+        <meta name="author" content="msykd">
       
       
         <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -35,7 +35,7 @@
     
     
       
-        <title>General Philosophy - Ethereum Smart Contract Best Practices</title>
+        <title>基本的な知識 - Ethereum Smart Contract Best Practices(日本語訳)</title>
       
     
     
@@ -82,7 +82,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="https://github.com/ConsenSys/smart-contract-best-practices" title="Ethereum Smart Contract Best Practices" class="md-header-nav__button md-logo">
+        <a href="https://github.com/msykd/smart-contract-best-practices/" title="Ethereum Smart Contract Best Practices(日本語訳)" class="md-header-nav__button md-logo">
           
             <i class="md-icon md-icon--home"></i>
           
@@ -97,7 +97,7 @@
             
               
             
-            General Philosophy
+            基本的な知識
           
         </span>
       </div>
@@ -136,7 +136,7 @@
   
 
 
-  <a href="https://github.com/ConsenSys/smart-contract-best-practices" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/msykd/smart-contract-best-practices/" title="Go to repository" class="md-source" data-md-source="github">
     
       <div class="md-source__icon">
         <svg viewBox="0 0 24 24" width="24" height="24">
@@ -174,7 +174,7 @@
         <i class="md-icon md-icon--home"></i>
       
     </span>
-    Ethereum Smart Contract Best Practices
+    Ethereum Smart Contract Best Practices(日本語訳)
   </label>
   
     <div class="md-nav__source">
@@ -184,7 +184,7 @@
   
 
 
-  <a href="https://github.com/ConsenSys/smart-contract-best-practices" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/msykd/smart-contract-best-practices/" title="Go to repository" class="md-source" data-md-source="github">
     
       <div class="md-source__icon">
         <svg viewBox="0 0 24 24" width="24" height="24">
@@ -207,8 +207,8 @@
 
 
   <li class="md-nav__item">
-    <a href=".." title="Home" class="md-nav__link">
-      Home
+    <a href=".." title="ホーム" class="md-nav__link">
+      ホーム
     </a>
   </li>
 
@@ -226,11 +226,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="toc">
-        General Philosophy
+        基本的な知識
       </label>
     
-    <a href="./" title="General Philosophy" class="md-nav__link md-nav__link--active">
-      General Philosophy
+    <a href="./" title="基本的な知識" class="md-nav__link md-nav__link--active">
+      基本的な知識
     </a>
     
       
@@ -242,65 +242,65 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prepare-for-failure" title="Prepare for failure" class="md-nav__link">
-    Prepare for failure
+  <a href="#_1" title="失敗する準備" class="md-nav__link">
+    失敗する準備
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#rollout-carefully" title="Rollout carefully" class="md-nav__link">
-    Rollout carefully
+  <a href="#_2" title="慎重にリリースする" class="md-nav__link">
+    慎重にリリースする
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#keep-contracts-simple" title="Keep contracts simple" class="md-nav__link">
-    Keep contracts simple
+  <a href="#_3" title="コントラクトをシンプルに保つ" class="md-nav__link">
+    コントラクトをシンプルに保つ
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#stay-up-to-date" title="Stay up to date" class="md-nav__link">
-    Stay up to date
+  <a href="#_4" title="コードをこまめにアップデートする" class="md-nav__link">
+    コードをこまめにアップデートする
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#be-aware-of-blockchain-properties" title="Be aware of blockchain properties" class="md-nav__link">
-    Be aware of blockchain properties
+  <a href="#_5" title="ブロックチェーンのプロパティに注意する" class="md-nav__link">
+    ブロックチェーンのプロパティに注意する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#fundamental-tradeoffs-simplicity-versus-complexity-cases" title="Fundamental Tradeoffs: Simplicity versus Complexity cases" class="md-nav__link">
-    Fundamental Tradeoffs: Simplicity versus Complexity cases
+  <a href="#vs" title="根本的なトレードオフ: シンプルさ vs 複雑さ" class="md-nav__link">
+    根本的なトレードオフ: シンプルさ vs 複雑さ
   </a>
   
     <nav class="md-nav">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#rigid-versus-upgradeable" title="Rigid versus Upgradeable" class="md-nav__link">
-    Rigid versus Upgradeable
+  <a href="#vs_1" title="アップグレード不可 vs アップグレード可能" class="md-nav__link">
+    アップグレード不可 vs アップグレード可能
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#monolithic-versus-modular" title="Monolithic versus Modular" class="md-nav__link">
-    Monolithic versus Modular
+  <a href="#vs_2" title="モノリシック vs モジュラー" class="md-nav__link">
+    モノリシック vs モジュラー
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplication-versus-reuse" title="Duplication versus Reuse" class="md-nav__link">
-    Duplication versus Reuse
+  <a href="#vs_3" title="重複 vs 再利用" class="md-nav__link">
+    重複 vs 再利用
   </a>
   
 </li>
@@ -325,8 +325,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../recommendations/" title="Recommendations for Smart Contract Security in Solidity" class="md-nav__link">
-      Recommendations for Smart Contract Security in Solidity
+    <a href="../recommendations/" title="推奨する実装方法" class="md-nav__link">
+      推奨する実装方法
     </a>
   </li>
 
@@ -337,8 +337,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../known_attacks/" title="Known Attacks" class="md-nav__link">
-      Known Attacks
+    <a href="../known_attacks/" title="既知の攻撃方法" class="md-nav__link">
+      既知の攻撃方法
     </a>
   </li>
 
@@ -349,8 +349,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../software_engineering/" title="Software Engineering Techniques" class="md-nav__link">
-      Software Engineering Techniques
+    <a href="../software_engineering/" title="リスクの備え方" class="md-nav__link">
+      リスクの備え方
     </a>
   </li>
 
@@ -361,8 +361,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../documentation_procedures/" title="Documentation and Procedures" class="md-nav__link">
-      Documentation and Procedures
+    <a href="../documentation_procedures/" title="ドキュメント化の手法" class="md-nav__link">
+      ドキュメント化の手法
     </a>
   </li>
 
@@ -373,8 +373,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../security_tools/" title="Security Tools" class="md-nav__link">
-      Security Tools
+    <a href="../security_tools/" title="便利なツール" class="md-nav__link">
+      便利なツール
     </a>
   </li>
 
@@ -385,8 +385,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../security_notifications/" title="Security Notifications" class="md-nav__link">
-      Security Notifications
+    <a href="../security_notifications/" title="セキュリティに関する情報" class="md-nav__link">
+      セキュリティに関する情報
     </a>
   </li>
 
@@ -494,65 +494,65 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prepare-for-failure" title="Prepare for failure" class="md-nav__link">
-    Prepare for failure
+  <a href="#_1" title="失敗する準備" class="md-nav__link">
+    失敗する準備
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#rollout-carefully" title="Rollout carefully" class="md-nav__link">
-    Rollout carefully
+  <a href="#_2" title="慎重にリリースする" class="md-nav__link">
+    慎重にリリースする
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#keep-contracts-simple" title="Keep contracts simple" class="md-nav__link">
-    Keep contracts simple
+  <a href="#_3" title="コントラクトをシンプルに保つ" class="md-nav__link">
+    コントラクトをシンプルに保つ
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#stay-up-to-date" title="Stay up to date" class="md-nav__link">
-    Stay up to date
+  <a href="#_4" title="コードをこまめにアップデートする" class="md-nav__link">
+    コードをこまめにアップデートする
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#be-aware-of-blockchain-properties" title="Be aware of blockchain properties" class="md-nav__link">
-    Be aware of blockchain properties
+  <a href="#_5" title="ブロックチェーンのプロパティに注意する" class="md-nav__link">
+    ブロックチェーンのプロパティに注意する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#fundamental-tradeoffs-simplicity-versus-complexity-cases" title="Fundamental Tradeoffs: Simplicity versus Complexity cases" class="md-nav__link">
-    Fundamental Tradeoffs: Simplicity versus Complexity cases
+  <a href="#vs" title="根本的なトレードオフ: シンプルさ vs 複雑さ" class="md-nav__link">
+    根本的なトレードオフ: シンプルさ vs 複雑さ
   </a>
   
     <nav class="md-nav">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#rigid-versus-upgradeable" title="Rigid versus Upgradeable" class="md-nav__link">
-    Rigid versus Upgradeable
+  <a href="#vs_1" title="アップグレード不可 vs アップグレード可能" class="md-nav__link">
+    アップグレード不可 vs アップグレード可能
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#monolithic-versus-modular" title="Monolithic versus Modular" class="md-nav__link">
-    Monolithic versus Modular
+  <a href="#vs_2" title="モノリシック vs モジュラー" class="md-nav__link">
+    モノリシック vs モジュラー
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#duplication-versus-reuse" title="Duplication versus Reuse" class="md-nav__link">
-    Duplication versus Reuse
+  <a href="#vs_3" title="重複 vs 再利用" class="md-nav__link">
+    重複 vs 再利用
   </a>
   
 </li>
@@ -576,66 +576,90 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/ConsenSys/smart-contract-best-practices/edit/master/docs/general_philosophy.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/msykd/smart-contract-best-practices/edit/master/docs/general_philosophy.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                  <h1>General Philosophy</h1>
+                  <h1>基本的な知識</h1>
                 
-                <p>Ethereum and complex blockchain programs are new and highly experimental. Therefore, you should expect constant changes in the security landscape, as new bugs and security risks are discovered, and new best practices are developed. Following the security practices in this document is therefore only the beginning of the security work you will need to do as a smart contract developer.</p>
-<p>Smart contract programming requires a different engineering mindset than you may be used to. The cost of failure can be high, and change can be difficult, making it in some ways more similar to hardware programming or financial services programming than web or mobile development. It is therefore not enough to defend against known vulnerabilities. Instead, you will need to learn a new philosophy of development:</p>
-<h2 id="prepare-for-failure">Prepare for failure<a class="headerlink" href="#prepare-for-failure" title="Permanent link">&para;</a></h2>
-<p>Any non-trivial contract will have errors in it. Your code must, therefore, be able to respond to bugs and vulnerabilities gracefully.</p>
+                <p>Ethereumと複雑なブロックチェーンプログラムは新しく、実験的なものです。
+新しいバグやセキュリティリスクが発見され、新しいベストプラクティスが開発されると、セキュリティの状況に絶え間ない変化が予想されるはずです。 
+したがって、この文書のセキュリティプラクティスに従うことは、スマートコントラクトエンジニアとして行う必要があるセキュリティ対策の始まりに過ぎません。</p>
+<p>スマートコントラクトプログラミングには、あなたが慣れ親しんでいたのとは異なるエンジニアリングの考え方が必要です。
+障害のコストは高くなる可能性があり、変更は困難な場合があります。Webやモバイル開発よりも、ハードウェアや金融サービスのプログラミングに似ています。
+したがって、既知の脆弱性を守るだけでは十分ではありません。開発の新しい哲学を学ぶ必要があります。</p>
+<h2 id="_1">失敗する準備<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>全ての重要なコントラクトには不具合が含まれる可能性があります。
+よってコードはバグや脆弱性に正常に対応できる必要があります。</p>
 <ul>
-<li>Pause the contract when things are going wrong ('circuit breaker')</li>
-<li>Manage the amount of money at risk (rate limiting, maximum usage)</li>
-<li>Have an effective upgrade path for bugfixes and improvements</li>
+<li>事態が悪化しそうな時にコントラクトを一時停止する('サーキットブレーカー')</li>
+<li>リスクに備えて資金を管理する(レート制限、最大使用量)</li>
+<li>バグ修正と改善のためのアップグレード方法を準備する</li>
 </ul>
-<h2 id="rollout-carefully">Rollout carefully<a class="headerlink" href="#rollout-carefully" title="Permanent link">&para;</a></h2>
-<p>It is always better to catch bugs before a full production release.
-  - Test contracts thoroughly, and add tests whenever new attack vectors are discovered
-  - Provide <a href="#bounties">bug bounties</a> starting from alpha testnet releases
-  - Rollout in phases, with increasing usage and testing in each phase</p>
-<h2 id="keep-contracts-simple">Keep contracts simple<a class="headerlink" href="#keep-contracts-simple" title="Permanent link">&para;</a></h2>
-<p>Complexity increases the likelihood of errors.</p>
+<h2 id="_2">慎重にリリースする<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>本番リリース前にバグを発見できるようにしましょう。</p>
 <ul>
-<li>Ensure the contract logic is simple</li>
-<li>Modularize code to keep contracts and functions small</li>
-<li>Use already-written tools or code where possible (eg. don't roll your own random number generator)</li>
-<li>Prefer clarity to performance whenever possible</li>
-<li>Only use the blockchain for the parts of your system that require decentralization</li>
+<li>コントラクトを徹底的にテストし、新しい攻撃方法が発見された時にテストを追加する</li>
+<li><a href="#bounties">バグバウンティプログラム</a>による報奨金制度を提供する</li>
+<li>段階的にリリースし、各段階で使用量とテストを増やす</li>
 </ul>
-<h2 id="stay-up-to-date">Stay up to date<a class="headerlink" href="#stay-up-to-date" title="Permanent link">&para;</a></h2>
-<p>Use the resources listed in the next section to keep track of new security developments.</p>
+<h2 id="_3">コントラクトをシンプルに保つ<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>複雑さはエラーの可能性を高めます。</p>
 <ul>
-<li>Check your contracts for any new bug that's discovered</li>
-<li>Upgrade to the latest version of any tool or library as soon as possible</li>
-<li>Adopt new security techniques that appear useful</li>
+<li>コントラクトのロジックがシンプルであることを確認する。</li>
+<li>コントラクトや関数を小さく保つためにモジュール化する</li>
+<li>可能なら、既に存在するツールやコードを使用する(例えば、オリジナルの乱数ジェネレーターを書かない)</li>
+<li>可能な限りパフォーマンスを明確にする</li>
+<li>分散を必要とする部分にのみブロックチェーンを使用する</li>
 </ul>
-<h2 id="be-aware-of-blockchain-properties">Be aware of blockchain properties<a class="headerlink" href="#be-aware-of-blockchain-properties" title="Permanent link">&para;</a></h2>
-<p>While much of your programming experience will be relevant to Ethereum programming, there are some pitfalls to be aware of.</p>
+<h2 id="_4">コードをこまめにアップデートする<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>下記を参考にセキュリティ対策を続けてください。</p>
 <ul>
-<li>Be extremely careful about external contract calls, which may execute malicious code and change control flow.</li>
-<li>Understand that your public functions are public, and may be called maliciously. Your private data is also viewable by anyone.</li>
-<li>Keep gas costs and the block gas limit in mind.</li>
+<li>新しく発見されたバグを確認する</li>
+<li>ツールまたはライブラリの最新バージョンにできるだけ早くアップグレードする</li>
+<li>有効と思われる新しいセキュリティ技術を採用する</li>
 </ul>
-<h2 id="fundamental-tradeoffs-simplicity-versus-complexity-cases">Fundamental Tradeoffs: Simplicity versus Complexity cases<a class="headerlink" href="#fundamental-tradeoffs-simplicity-versus-complexity-cases" title="Permanent link">&para;</a></h2>
-<p>There are multiple fundamental tradeoffs to consider when assessing the structure and security of a smart contract system.  The general recommendation for any smart contract system is to identify the proper balance for these fundamental tradeoffs.</p>
-<p>An ideal smart contract system from a software engineering bias is modular, reuses code instead of duplicating it, and supports upgradeable components.  An ideal smart contract system from a secure architecture bias may share this mindset, especially in the case of more complex smart contract systems.</p>
-<p>However, there are important exceptions where security and software engineering best practices may not be aligned.  In each case, the proper balance is obtained by identifying the optimal mix of properties along contract system dimensions such as:</p>
+<h2 id="_5">ブロックチェーンのプロパティに注意する<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>あなたのプログラミング経験の多くはEthereumプログラミングに役立ちますが、注意すべきいくつかの落とし穴があります。</p>
 <ul>
-<li>Rigid versus Upgradeable</li>
-<li>Monolithic versus Modular</li>
-<li>Duplication versus Reuse</li>
+<li>悪質なコードを実行したり、制御フローを変更したりする可能性のある外部のコントラクトをコールする際は十分注意してください。</li>
+<li>コントラクトコードは公開されていることを理解してください。悪意を持って呼び出される可能性があります。データは誰でも見ることが出来ます。</li>
+<li>ガスコストとブロックガスの制限を念頭に置いてください。</li>
 </ul>
-<h3 id="rigid-versus-upgradeable">Rigid versus Upgradeable<a class="headerlink" href="#rigid-versus-upgradeable" title="Permanent link">&para;</a></h3>
-<p>While multiple resources, including this one, emphasize malleability characteristics such as Killable, Upgradeable or Modifiable patterns there is a <em>fundamental tradeoff</em> between malleability and security.</p>
-<p>Malleability patterns by definition add complexity and potential attack surfaces.  Simplicity is particularly effective over complexity in cases where the smart contract system performs a very limited set of functionality for a pre-defined limited period of time, for example, a governance-free finite-time-frame token-sale contract system.</p>
-<h3 id="monolithic-versus-modular">Monolithic versus Modular<a class="headerlink" href="#monolithic-versus-modular" title="Permanent link">&para;</a></h3>
-<p>A monolithic self-contained contract keeps all knowledge locally identifiable and readable.  While there are few smart contract systems held in high regard that exist as monoliths, there is an argument to be made for extreme locality of data and flow - for example, in the case of optimizing code review efficiency.</p>
-<p>As with the other tradeoffs considered here, security best practices trend away from software engineering best practices in simple short-lived contracts and trend toward software engineering best practices in the case of more complex perpetual contract systems.</p>
-<h3 id="duplication-versus-reuse">Duplication versus Reuse<a class="headerlink" href="#duplication-versus-reuse" title="Permanent link">&para;</a></h3>
-<p>A smart contract system from a software engineering perspective wishes to maximize reuse where reasonable.  There are many ways to reuse contract code in Solidity.  Using proven previously-deployed contracts <em>which you own</em> is generally the safest manner to achieve code reuse.</p>
-<p>Duplication is frequently relied upon in cases where self-owned previously-deployed contracts are not available.  Efforts such as <a href="https://github.com/ConsenSys/live-libs">Live Libs</a> and <a href="https://github.com/OpenZeppelin/zeppelin-solidity">Zeppelin Solidity</a> seek to provide patterns such that secure code can be re-used without duplication.  Any contract security analyses must include any re-used code that has not previously established a level of trust commensurate with the funds at risk in the target smart contract system.</p>
+<h2 id="vs">根本的なトレードオフ: シンプルさ vs 複雑さ<a class="headerlink" href="#vs" title="Permanent link">&para;</a></h2>
+<p>スマートコントラクトの構造とセキュリティを評価する際に考慮すべき複数の根本的なトレードオフがあります。
+スマートコントラクトの一般的な推奨事項は、これらの根本的なトレードオフの適切なバランスを特定することです。</p>
+<p>理想的なスマートコントラクトは、ソフトウェアエンジニアリングによるモジュール化であり、
+コードを複製せずに再利用し、アップグレード可能なコンポーネントをサポートします。</p>
+<p>ただし、セキュリティとソフトウェアエンジニアリングのベストプラクティスが一致しない場合があるという重要な例外があります。
+いずれの場合も、以下のようなコントラクトシステムの規模に合った最適な特徴の組み合わせを特定することによって、適切なバランスを知ることが出来ます。</p>
+<ul>
+<li>アップグレード不可 vs アップグレード可能</li>
+<li>モノリシック vs モジュラー</li>
+<li>重複 vs 再利用</li>
+</ul>
+<h3 id="vs_1">アップグレード不可 vs アップグレード可能<a class="headerlink" href="#vs_1" title="Permanent link">&para;</a></h3>
+<p>このような複数のリソースは、キルしやすい、アップグレード可能、または変更可能な可用性を強調しますが、
+可用性とセキュリティの間には根本的なトレードオフがあります。</p>
+<p>定義による可用性パターンは複雑さと潜在的な攻撃面を追加します。
+シンプルさは、スマートコントラクトが管理不要で有効期限のあるトークンセールシステムなど、
+あらかじめ定義された期間、限られた機能を実行する場合の複雑さに対して特に効果的です。</p>
+<h3 id="vs_2">モノリシック vs モジュラー<a class="headerlink" href="#vs_2" title="Permanent link">&para;</a></h3>
+<p>モノリシックな自己完結型コントラクトは、すべての知識をローカルに識別して読み取り可能にします。
+モノリスとして存在する高性能なコントラクトシステムはほとんど存在しませんが、コードレビューの効率を最適化する場合など、
+データとフローの極端な地域に対して議論が必要です。</p>
+<p>ここで考慮されている他のトレードオフと同様に、セキュリティのベストプラクティスは、
+単純な短命契約のソフトウェアエンジニアリングのベストプラクティスと、
+より複雑な永続契約システムの場合のソフトウェアエンジニアリングのベストプラクティスへの傾向から離れています。</p>
+<h3 id="vs_3">重複 vs 再利用<a class="headerlink" href="#vs_3" title="Permanent link">&para;</a></h3>
+<p>ソフトウェアエンジニアリングの観点から見たスマートコントラクトシステムは、合理的なところで再利用を最大限にしようとしています。
+Solidityでコントラクトコードを再利用する方法はたくさんあります。
+あなたが所有している証明済みの以前にデプロイされたコントラクトを使うことは、一般的にコードの再利用を達成する最も安全な方法です。</p>
+<p>自己所有の以前に展開された契約が利用できない場合、複製は頻繁に使用されます。
+<a href="https://github.com/ConsenSys/live-libs">Live Libs</a>や
+<a href="https://github.com/OpenZeppelin/zeppelin-solidity">Zeppelin Solidity</a>のような取り組みは、
+安全なコードを重複することなく再利用することができます。
+コントラクト上のセキュリティ分析には、対象のスマートコントラクトシステムでリスクのある資金と釣り合ったレベルの信頼を以前に
+確立していない再利用されたコードが含まれていなければなりません。</p>
                 
                   
                 
@@ -654,7 +678,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href=".." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href=".." title="ホーム" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -663,19 +687,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Home
+                ホーム
               </span>
             </div>
           </a>
         
         
-          <a href="../recommendations/" title="Recommendations for Smart Contract Security in Solidity" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../recommendations/" title="推奨する実装方法" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Recommendations for Smart Contract Security in Solidity
+                推奨する実装方法
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

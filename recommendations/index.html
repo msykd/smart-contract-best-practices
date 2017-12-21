@@ -8,10 +8,10 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="https://github.com/ConsenSys/smart-contract-best-practices/recommendations/">
+        <link rel="canonical" href="https://github.com/msykd/smart-contract-best-practices/recommendations/">
       
       
-        <meta name="author" content="ConsenSys">
+        <meta name="author" content="msykd">
       
       
         <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -35,7 +35,7 @@
     
     
       
-        <title>Recommendations for Smart Contract Security in Solidity - Ethereum Smart Contract Best Practices</title>
+        <title>推奨する実装方法 - Ethereum Smart Contract Best Practices(日本語訳)</title>
       
     
     
@@ -82,7 +82,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="https://github.com/ConsenSys/smart-contract-best-practices" title="Ethereum Smart Contract Best Practices" class="md-header-nav__button md-logo">
+        <a href="https://github.com/msykd/smart-contract-best-practices/" title="Ethereum Smart Contract Best Practices(日本語訳)" class="md-header-nav__button md-logo">
           
             <i class="md-icon md-icon--home"></i>
           
@@ -97,7 +97,7 @@
             
               
             
-            Recommendations for Smart Contract Security in Solidity
+            推奨する実装方法
           
         </span>
       </div>
@@ -136,7 +136,7 @@
   
 
 
-  <a href="https://github.com/ConsenSys/smart-contract-best-practices" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/msykd/smart-contract-best-practices/" title="Go to repository" class="md-source" data-md-source="github">
     
       <div class="md-source__icon">
         <svg viewBox="0 0 24 24" width="24" height="24">
@@ -174,7 +174,7 @@
         <i class="md-icon md-icon--home"></i>
       
     </span>
-    Ethereum Smart Contract Best Practices
+    Ethereum Smart Contract Best Practices(日本語訳)
   </label>
   
     <div class="md-nav__source">
@@ -184,7 +184,7 @@
   
 
 
-  <a href="https://github.com/ConsenSys/smart-contract-best-practices" title="Go to repository" class="md-source" data-md-source="github">
+  <a href="https://github.com/msykd/smart-contract-best-practices/" title="Go to repository" class="md-source" data-md-source="github">
     
       <div class="md-source__icon">
         <svg viewBox="0 0 24 24" width="24" height="24">
@@ -207,8 +207,8 @@
 
 
   <li class="md-nav__item">
-    <a href=".." title="Home" class="md-nav__link">
-      Home
+    <a href=".." title="ホーム" class="md-nav__link">
+      ホーム
     </a>
   </li>
 
@@ -219,8 +219,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../general_philosophy/" title="General Philosophy" class="md-nav__link">
-      General Philosophy
+    <a href="../general_philosophy/" title="基本的な知識" class="md-nav__link">
+      基本的な知識
     </a>
   </li>
 
@@ -238,11 +238,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="toc">
-        Recommendations for Smart Contract Security in Solidity
+        推奨する実装方法
       </label>
     
-    <a href="./" title="Recommendations for Smart Contract Security in Solidity" class="md-nav__link md-nav__link--active">
-      Recommendations for Smart Contract Security in Solidity
+    <a href="./" title="推奨する実装方法" class="md-nav__link md-nav__link--active">
+      推奨する実装方法
     </a>
     
       
@@ -254,58 +254,58 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#protocol-specific-recommendations" title="Protocol specific recommendations" class="md-nav__link">
-    Protocol specific recommendations
+  <a href="#_1" title="プロトコル固有の推奨事項" class="md-nav__link">
+    プロトコル固有の推奨事項
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#external-calls" title="External Calls" class="md-nav__link">
-    External Calls
+  <a href="#_3" title="外部コール" class="md-nav__link">
+    外部コール
   </a>
   
     <nav class="md-nav">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#use-caution-when-making-external-calls" title="Use caution when making external calls" class="md-nav__link">
-    Use caution when making external calls
+  <a href="#_4" title="外部コールを行う時は注意する" class="md-nav__link">
+    外部コールを行う時は注意する
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#mark-untrusted-contracts" title="Mark untrusted contracts" class="md-nav__link">
-    Mark untrusted contracts
+  <a href="#_5" title="信用できないコントラクトにマークをつける" class="md-nav__link">
+    信用できないコントラクトにマークをつける
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#dont-make-control-flow-assumptions-after-external-calls" title="Don't make control flow assumptions after external calls" class="md-nav__link">
-    Don't make control flow assumptions after external calls
+  <a href="#_6" title="外部コール後に制御フローを仮定しない" class="md-nav__link">
+    外部コール後に制御フローを仮定しない
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#be-aware-of-the-tradeoffs-between-send-transfer-and-callvalue" title="Be aware of the tradeoffs between send(), transfer(), and call.value()()" class="md-nav__link">
-    Be aware of the tradeoffs between send(), transfer(), and call.value()()
+  <a href="#send-transfer-callvalue" title="send(), transfer(), call.value()()の間のトレードオフに注意する" class="md-nav__link">
+    send(), transfer(), call.value()()の間のトレードオフに注意する
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#handle-errors-in-external-calls" title="Handle errors in external calls" class="md-nav__link">
-    Handle errors in external calls
+  <a href="#_7" title="外部呼び出しのエラー処理" class="md-nav__link">
+    外部呼び出しのエラー処理
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#favor-pull-over-push-for-external-calls" title="Favor pull over push for external calls" class="md-nav__link">
-    Favor pull over push for external calls
+  <a href="#_8" title="外部呼び出しが失敗した場合のリスクヘッジ" class="md-nav__link">
+    外部呼び出しが失敗した場合のリスクヘッジ
   </a>
   
 </li>
@@ -316,128 +316,128 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dont-assume-contracts-are-created-with-zero-balance" title="Don't assume contracts are created with zero balance" class="md-nav__link">
-    Don't assume contracts are created with zero balance
+  <a href="#0" title="新たにデプロイされたコントラクトの残高が0と決めつけない" class="md-nav__link">
+    新たにデプロイされたコントラクトの残高が0と決めつけない
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#remember-that-on-chain-data-is-public" title="Remember that on-chain data is public" class="md-nav__link">
-    Remember that on-chain data is public
+  <a href="#_9" title="オンチェーンのデータは公開されていることを忘れない" class="md-nav__link">
+    オンチェーンのデータは公開されていることを忘れない
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#in-2-party-or-n-party-contracts-beware-of-the-possibility-that-some-participants-may-drop-offline-and-not-return" title="In 2-party or N-party contracts, beware of the possibility that some participants may "drop offline" and not return" class="md-nav__link">
-    In 2-party or N-party contracts, beware of the possibility that some participants may "drop offline" and not return
+  <a href="#2n" title="2者契約またはN者契約では、一部の参加者が「オフラインになる」可能性があることに注意する" class="md-nav__link">
+    2者契約またはN者契約では、一部の参加者が「オフラインになる」可能性があることに注意する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#solidity-specific-recommendations" title="Solidity specific recommendations" class="md-nav__link">
-    Solidity specific recommendations
+  <a href="#solidity" title="Solidity特有の推奨事項" class="md-nav__link">
+    Solidity特有の推奨事項
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#enforce-invariants-with-assert" title="Enforce invariants with assert()" class="md-nav__link">
-    Enforce invariants with assert()
+  <a href="#assert" title="assert()で不変量を強制する" class="md-nav__link">
+    assert()で不変量を強制する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#use-assert-and-require-properly" title="Use assert() and require() properly" class="md-nav__link">
-    Use assert() and require() properly
+  <a href="#assert-require-solidity-0410" title="assert() と require() プロパティを使う (Solidity &gt;= 0.4.10)" class="md-nav__link">
+    assert() と require() プロパティを使う (Solidity &gt;= 0.4.10)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#beware-rounding-with-integer-division" title="Beware rounding with integer division" class="md-nav__link">
-    Beware rounding with integer division
+  <a href="#_11" title="整数除算での丸めに注意する" class="md-nav__link">
+    整数除算での丸めに注意する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#remember-that-ether-can-be-forcibly-sent-to-an-account" title="Remember that Ether can be forcibly sent to an account" class="md-nav__link">
-    Remember that Ether can be forcibly sent to an account
+  <a href="#ether" title="Etherは強制的にアカウントに送ることが出来る" class="md-nav__link">
+    Etherは強制的にアカウントに送ることが出来る
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#be-aware-of-the-tradeoffs-between-abstract-contracts-and-interfaces" title="Be aware of the tradeoffs between abstract contracts and interfaces" class="md-nav__link">
-    Be aware of the tradeoffs between abstract contracts and interfaces
+  <a href="#_12" title="抽象的な契約とインタフェースの間のトレードオフに注意してください" class="md-nav__link">
+    抽象的な契約とインタフェースの間のトレードオフに注意してください
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#keep-fallback-functions-simple" title="Keep fallback functions simple" class="md-nav__link">
-    Keep fallback functions simple
+  <a href="#fallback" title="fallback関数をシンプルに保つ" class="md-nav__link">
+    fallback関数をシンプルに保つ
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#explicitly-mark-visibility-in-functions-and-state-variables" title="Explicitly mark visibility in functions and state variables" class="md-nav__link">
-    Explicitly mark visibility in functions and state variables
+  <a href="#_13" title="関数と状態変数の可視性を明示的にマークする" class="md-nav__link">
+    関数と状態変数の可視性を明示的にマークする
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#lock-pragmas-to-specific-compiler-version" title="Lock pragmas to specific compiler version" class="md-nav__link">
-    Lock pragmas to specific compiler version
+  <a href="#_14" title="プラグマを特定のコンパイラのバージョンにロックする" class="md-nav__link">
+    プラグマを特定のコンパイラのバージョンにロックする
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#differentiate-functions-and-events" title="Differentiate functions and events" class="md-nav__link">
-    Differentiate functions and events
+  <a href="#_15" title="関数とイベントの命名規則" class="md-nav__link">
+    関数とイベントの命名規則
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#prefer-newer-solidity-constructs" title="Prefer newer Solidity constructs" class="md-nav__link">
-    Prefer newer Solidity constructs
+  <a href="#solidity_1" title="より新しいSolidity構造を用いる" class="md-nav__link">
+    より新しいSolidity構造を用いる
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#be-aware-that-built-ins-can-be-shadowed" title="Be aware that 'Built-ins' can be shadowed" class="md-nav__link">
-    Be aware that 'Built-ins' can be shadowed
+  <a href="#_16" title="ビルトインはシャドーイング出来ることに注意する" class="md-nav__link">
+    ビルトインはシャドーイング出来ることに注意する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#avoid-using-txorigin" title="Avoid using tx.origin" class="md-nav__link">
-    Avoid using tx.origin
+  <a href="#txorigin" title="tx.originを使わない" class="md-nav__link">
+    tx.originを使わない
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deprecatedhistorical-recommendations" title="Deprecated/historical recommendations" class="md-nav__link">
-    Deprecated/historical recommendations
+  <a href="#_17" title="廃止予定/過去の推奨事項" class="md-nav__link">
+    廃止予定/過去の推奨事項
   </a>
   
     <nav class="md-nav">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#beware-division-by-zero-solidity-04" title="Beware division by zero (Solidity &lt; 0.4)" class="md-nav__link">
-    Beware division by zero (Solidity &lt; 0.4)
+  <a href="#solidity-04" title="ゼロによる除算に注意 (Solidity &lt; 0.4)" class="md-nav__link">
+    ゼロによる除算に注意 (Solidity &lt; 0.4)
   </a>
   
 </li>
@@ -462,8 +462,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../known_attacks/" title="Known Attacks" class="md-nav__link">
-      Known Attacks
+    <a href="../known_attacks/" title="既知の攻撃方法" class="md-nav__link">
+      既知の攻撃方法
     </a>
   </li>
 
@@ -474,8 +474,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../software_engineering/" title="Software Engineering Techniques" class="md-nav__link">
-      Software Engineering Techniques
+    <a href="../software_engineering/" title="リスクの備え方" class="md-nav__link">
+      リスクの備え方
     </a>
   </li>
 
@@ -486,8 +486,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../documentation_procedures/" title="Documentation and Procedures" class="md-nav__link">
-      Documentation and Procedures
+    <a href="../documentation_procedures/" title="ドキュメント化の手法" class="md-nav__link">
+      ドキュメント化の手法
     </a>
   </li>
 
@@ -498,8 +498,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../security_tools/" title="Security Tools" class="md-nav__link">
-      Security Tools
+    <a href="../security_tools/" title="便利なツール" class="md-nav__link">
+      便利なツール
     </a>
   </li>
 
@@ -510,8 +510,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../security_notifications/" title="Security Notifications" class="md-nav__link">
-      Security Notifications
+    <a href="../security_notifications/" title="セキュリティに関する情報" class="md-nav__link">
+      セキュリティに関する情報
     </a>
   </li>
 
@@ -619,58 +619,58 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#protocol-specific-recommendations" title="Protocol specific recommendations" class="md-nav__link">
-    Protocol specific recommendations
+  <a href="#_1" title="プロトコル固有の推奨事項" class="md-nav__link">
+    プロトコル固有の推奨事項
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#external-calls" title="External Calls" class="md-nav__link">
-    External Calls
+  <a href="#_3" title="外部コール" class="md-nav__link">
+    外部コール
   </a>
   
     <nav class="md-nav">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#use-caution-when-making-external-calls" title="Use caution when making external calls" class="md-nav__link">
-    Use caution when making external calls
+  <a href="#_4" title="外部コールを行う時は注意する" class="md-nav__link">
+    外部コールを行う時は注意する
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#mark-untrusted-contracts" title="Mark untrusted contracts" class="md-nav__link">
-    Mark untrusted contracts
+  <a href="#_5" title="信用できないコントラクトにマークをつける" class="md-nav__link">
+    信用できないコントラクトにマークをつける
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#dont-make-control-flow-assumptions-after-external-calls" title="Don't make control flow assumptions after external calls" class="md-nav__link">
-    Don't make control flow assumptions after external calls
+  <a href="#_6" title="外部コール後に制御フローを仮定しない" class="md-nav__link">
+    外部コール後に制御フローを仮定しない
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#be-aware-of-the-tradeoffs-between-send-transfer-and-callvalue" title="Be aware of the tradeoffs between send(), transfer(), and call.value()()" class="md-nav__link">
-    Be aware of the tradeoffs between send(), transfer(), and call.value()()
+  <a href="#send-transfer-callvalue" title="send(), transfer(), call.value()()の間のトレードオフに注意する" class="md-nav__link">
+    send(), transfer(), call.value()()の間のトレードオフに注意する
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#handle-errors-in-external-calls" title="Handle errors in external calls" class="md-nav__link">
-    Handle errors in external calls
+  <a href="#_7" title="外部呼び出しのエラー処理" class="md-nav__link">
+    外部呼び出しのエラー処理
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#favor-pull-over-push-for-external-calls" title="Favor pull over push for external calls" class="md-nav__link">
-    Favor pull over push for external calls
+  <a href="#_8" title="外部呼び出しが失敗した場合のリスクヘッジ" class="md-nav__link">
+    外部呼び出しが失敗した場合のリスクヘッジ
   </a>
   
 </li>
@@ -681,128 +681,128 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dont-assume-contracts-are-created-with-zero-balance" title="Don't assume contracts are created with zero balance" class="md-nav__link">
-    Don't assume contracts are created with zero balance
+  <a href="#0" title="新たにデプロイされたコントラクトの残高が0と決めつけない" class="md-nav__link">
+    新たにデプロイされたコントラクトの残高が0と決めつけない
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#remember-that-on-chain-data-is-public" title="Remember that on-chain data is public" class="md-nav__link">
-    Remember that on-chain data is public
+  <a href="#_9" title="オンチェーンのデータは公開されていることを忘れない" class="md-nav__link">
+    オンチェーンのデータは公開されていることを忘れない
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#in-2-party-or-n-party-contracts-beware-of-the-possibility-that-some-participants-may-drop-offline-and-not-return" title="In 2-party or N-party contracts, beware of the possibility that some participants may "drop offline" and not return" class="md-nav__link">
-    In 2-party or N-party contracts, beware of the possibility that some participants may "drop offline" and not return
+  <a href="#2n" title="2者契約またはN者契約では、一部の参加者が「オフラインになる」可能性があることに注意する" class="md-nav__link">
+    2者契約またはN者契約では、一部の参加者が「オフラインになる」可能性があることに注意する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#solidity-specific-recommendations" title="Solidity specific recommendations" class="md-nav__link">
-    Solidity specific recommendations
+  <a href="#solidity" title="Solidity特有の推奨事項" class="md-nav__link">
+    Solidity特有の推奨事項
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#enforce-invariants-with-assert" title="Enforce invariants with assert()" class="md-nav__link">
-    Enforce invariants with assert()
+  <a href="#assert" title="assert()で不変量を強制する" class="md-nav__link">
+    assert()で不変量を強制する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#use-assert-and-require-properly" title="Use assert() and require() properly" class="md-nav__link">
-    Use assert() and require() properly
+  <a href="#assert-require-solidity-0410" title="assert() と require() プロパティを使う (Solidity &gt;= 0.4.10)" class="md-nav__link">
+    assert() と require() プロパティを使う (Solidity &gt;= 0.4.10)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#beware-rounding-with-integer-division" title="Beware rounding with integer division" class="md-nav__link">
-    Beware rounding with integer division
+  <a href="#_11" title="整数除算での丸めに注意する" class="md-nav__link">
+    整数除算での丸めに注意する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#remember-that-ether-can-be-forcibly-sent-to-an-account" title="Remember that Ether can be forcibly sent to an account" class="md-nav__link">
-    Remember that Ether can be forcibly sent to an account
+  <a href="#ether" title="Etherは強制的にアカウントに送ることが出来る" class="md-nav__link">
+    Etherは強制的にアカウントに送ることが出来る
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#be-aware-of-the-tradeoffs-between-abstract-contracts-and-interfaces" title="Be aware of the tradeoffs between abstract contracts and interfaces" class="md-nav__link">
-    Be aware of the tradeoffs between abstract contracts and interfaces
+  <a href="#_12" title="抽象的な契約とインタフェースの間のトレードオフに注意してください" class="md-nav__link">
+    抽象的な契約とインタフェースの間のトレードオフに注意してください
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#keep-fallback-functions-simple" title="Keep fallback functions simple" class="md-nav__link">
-    Keep fallback functions simple
+  <a href="#fallback" title="fallback関数をシンプルに保つ" class="md-nav__link">
+    fallback関数をシンプルに保つ
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#explicitly-mark-visibility-in-functions-and-state-variables" title="Explicitly mark visibility in functions and state variables" class="md-nav__link">
-    Explicitly mark visibility in functions and state variables
+  <a href="#_13" title="関数と状態変数の可視性を明示的にマークする" class="md-nav__link">
+    関数と状態変数の可視性を明示的にマークする
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#lock-pragmas-to-specific-compiler-version" title="Lock pragmas to specific compiler version" class="md-nav__link">
-    Lock pragmas to specific compiler version
+  <a href="#_14" title="プラグマを特定のコンパイラのバージョンにロックする" class="md-nav__link">
+    プラグマを特定のコンパイラのバージョンにロックする
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#differentiate-functions-and-events" title="Differentiate functions and events" class="md-nav__link">
-    Differentiate functions and events
+  <a href="#_15" title="関数とイベントの命名規則" class="md-nav__link">
+    関数とイベントの命名規則
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#prefer-newer-solidity-constructs" title="Prefer newer Solidity constructs" class="md-nav__link">
-    Prefer newer Solidity constructs
+  <a href="#solidity_1" title="より新しいSolidity構造を用いる" class="md-nav__link">
+    より新しいSolidity構造を用いる
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#be-aware-that-built-ins-can-be-shadowed" title="Be aware that 'Built-ins' can be shadowed" class="md-nav__link">
-    Be aware that 'Built-ins' can be shadowed
+  <a href="#_16" title="ビルトインはシャドーイング出来ることに注意する" class="md-nav__link">
+    ビルトインはシャドーイング出来ることに注意する
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#avoid-using-txorigin" title="Avoid using tx.origin" class="md-nav__link">
-    Avoid using tx.origin
+  <a href="#txorigin" title="tx.originを使わない" class="md-nav__link">
+    tx.originを使わない
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deprecatedhistorical-recommendations" title="Deprecated/historical recommendations" class="md-nav__link">
-    Deprecated/historical recommendations
+  <a href="#_17" title="廃止予定/過去の推奨事項" class="md-nav__link">
+    廃止予定/過去の推奨事項
   </a>
   
     <nav class="md-nav">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#beware-division-by-zero-solidity-04" title="Beware division by zero (Solidity &lt; 0.4)" class="md-nav__link">
-    Beware division by zero (Solidity &lt; 0.4)
+  <a href="#solidity-04" title="ゼロによる除算に注意 (Solidity &lt; 0.4)" class="md-nav__link">
+    ゼロによる除算に注意 (Solidity &lt; 0.4)
   </a>
   
 </li>
@@ -826,20 +826,24 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/ConsenSys/smart-contract-best-practices/edit/master/docs/recommendations.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/msykd/smart-contract-best-practices/edit/master/docs/recommendations.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                  <h1>Recommendations for Smart Contract Security in Solidity</h1>
+                  <h1>推奨する実装方法</h1>
                 
-                <p>This page demonstrates a number of solidity patterns which should generally be followed when writing smart contracts.</p>
-<h2 id="protocol-specific-recommendations">Protocol specific recommendations<a class="headerlink" href="#protocol-specific-recommendations" title="Permanent link">&para;</a></h2>
-<h3 id="_1"><!-- --><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
-<p>The following recommendations apply to the development of any contract system on Ethereum.</p>
-<h2 id="external-calls">External Calls<a class="headerlink" href="#external-calls" title="Permanent link">&para;</a></h2>
-<h3 id="use-caution-when-making-external-calls">Use caution when making external calls<a class="headerlink" href="#use-caution-when-making-external-calls" title="Permanent link">&para;</a></h3>
-<p>Calls to untrusted contracts can introduce several unexpected risks or errors. External calls may execute malicious code in that contract <em>or</em> any other contract that it depends upon. As such, every external call should be treated as a potential security risk. When it is not possible, or undesirable to remove external calls, use the recommendations in the rest of this section to minimize the danger.</p>
-<h3 id="mark-untrusted-contracts">Mark untrusted contracts<a class="headerlink" href="#mark-untrusted-contracts" title="Permanent link">&para;</a></h3>
-<p>When interacting with external contracts, name your variables, methods, and contract interfaces in a way that makes it clear that interacting with them is potentially unsafe. This applies to your own functions that call external contracts.</p>
+                <p>このページでは、スマートコントラクトを書くときに一般的に従うべきいくつかのパターンを示しています。</p>
+<h2 id="_1">プロトコル固有の推奨事項<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h3 id="_2"><!-- --><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>以下の推奨事項は、Ethereum上の契約システムの開発に適用されます。</p>
+<h2 id="_3">外部コール<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h3 id="_4">外部コールを行う時は注意する<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>信頼されていないコントラクトを呼び出すと、いくつかの予期しないリスクやエラーが発生する可能性があります。
+外部呼び出しは、その契約で悪意のあるコードを実行する可能性があります。
+したがって、すべての外部コールは潜在的なセキュリティリスクとして扱う必要があります。
+外部コールを取り除くことができない、または望ましくない場合は、このセクションの残りのセクションの推奨事項を使用して危険を最小限に抑えてください。</p>
+<h3 id="_5">信用できないコントラクトにマークをつける<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<p>外部コントラクトと対話するときは、変数、メソッド、およびコントラクト・インターフェースに、それらとの相互作用が潜在的に危険なものであることを明確にするような名前を付けます。
+これは、外部コントラクトを呼び出す独自の関数に適用されます。</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
 <span class="n">Bank</span><span class="p">.</span><span class="n">withdraw</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span> <span class="c1">// Unclear whether trusted or untrusted</span>
 
@@ -856,32 +860,38 @@
 <span class="p">}</span>
 </pre></div>
 
-<h3 id="dont-make-control-flow-assumptions-after-external-calls">Don't make control flow assumptions after external calls<a class="headerlink" href="#dont-make-control-flow-assumptions-after-external-calls" title="Permanent link">&para;</a></h3>
-<p>Whether using <em>raw calls</em> (of the form <code>someAddress.call()</code>) or <em>contract calls</em> (of the form <code>ExternalContract.someMethod()</code>), assume that malicious code might execute. Even if <code>ExternalContract</code> is not malicious, malicious code can be executed by any contracts <em>it</em> calls. </p>
-<p>One particular danger is malicious code may hijack the control flow, leading to race conditions. (See <a href="https://github.com/ConsenSys/smart-contract-best-practices/#race-conditions">Race Conditions</a> for a fuller discussion of this problem).</p>
-<p>If you are making a call to an untrusted external contract, <em>avoid state changes after the call</em>.</p>
-<h3 id="be-aware-of-the-tradeoffs-between-send-transfer-and-callvalue">Be aware of the tradeoffs between <code>send()</code>, <code>transfer()</code>, and <code>call.value()()</code><a class="headerlink" href="#be-aware-of-the-tradeoffs-between-send-transfer-and-callvalue" title="Permanent link">&para;</a></h3>
-<p>When sending ether be aware of the relative tradeoffs between the use of
-<code>someAddress.send()</code>, <code>someAddress.transfer()</code>, and <code>someAddress.call.value()()</code>.</p>
+<h3 id="_6">外部コール後に制御フローを仮定しない<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p><em>raw calls</em> (<code>someAddress.call()</code>) や <em>contract calls</em> (<code>ExternalContract.someMethod()</code>)の
+どちらを使用する場合でも、悪質なコードが実行される可能性があるとします。</p>
+<p>外部コントラクトが悪意のあるものではないとしても、それが呼び出すすべてのコントラクトによって悪質なコードが実行される可能性があります。</p>
+<p>特に危険なのは、悪質なコードが制御フローを乗っ取って競合状態に陥ることです。
+(この問題の詳細な議論については、<a href="https://github.com/ConsenSys/smart-contract-best-practices/#race-conditions">Race Conditions</a>を参照してください)</p>
+<p>あなたが信頼されていない外部コントラクトをコールしているなら、コール後にステートの変更を避けてください。</p>
+<h3 id="send-transfer-callvalue"><code>send()</code>, <code>transfer()</code>, <code>call.value()()</code>の間のトレードオフに注意する<a class="headerlink" href="#send-transfer-callvalue" title="Permanent link">&para;</a></h3>
+<p>etherを送信する方法として
+<code>someAddress.send()</code>, <code>someAddress.transfer()</code>, <code>someAddress.call.value()()</code>などがあります。</p>
 <ul>
-<li><code>someAddress.send()</code>and <code>someAddress.transfer()</code> are considered <em>safe</em> against <a href="#reentrancy">reentrancy</a>.
-    While these methods still trigger code execution, the called contract is
-    only given a stipend of 2,300 gas which is currently only enough to log an
-    event.</li>
-<li><code>x.transfer(y)</code> is equivalent to <code>require(x.send(y));</code>, it will automatically revert if the send fails.</li>
-<li><code>someAddress.call.value(y)()</code> will send the provided ether and trigger code execution.<br />
-    The executed code is given all available gas for execution making this type of value transfer <em>unsafe</em> against reentrancy.</li>
+<li>
+<p><code>someAddress.send()</code>と<code>someAddress.transfer()</code>はリエントラント(再入可能)性に対して安全と見なされます。
+  これらのメソッドはコードを実行しますが、呼び出されるコントラクトには2,300ガスの義務のみが与えられ、現在はイベントを記録するのに十分です。</p>
+</li>
+<li>
+<p><code>x.transfer(y)</code> は <code>require(x.send(y));</code>と同じで、送信が失敗すると元の状態に戻ります。</p>
+</li>
+<li><code>someAddress.call.value(y)()</code>は、提供されたetherとトリガーコードを送信します。
+  実行されたコードには利用できるすべてのガスが与えられ、リエントラント性に対して安全ではありません。</li>
 </ul>
-<p>Using <code>send()</code> or <code>transfer()</code> will prevent reentrancy but it does so at the cost of being incompatible with any contract whose fallback function requires more than 2,300 gas. It is also possible to use <code>someAddress.call.value(ethAmount).gas(gasAmount)()</code> to forward a custom amount of gas.</p>
-<p>One pattern that attempts to balance this trade-off is to implement both
-a <a href="#favor-pull-over-push-payments"><em>push</em> and <em>pull</em></a> mechanism, using <code>send()</code> or <code>transfer()</code>
-for the <em>push</em> component and <code>call.value()()</code> for the <em>pull</em> component.</p>
-<p>It is worth pointing out that exclusive use of <code>send()</code> or <code>transfer()</code> for value transfers
-does not itself make a contract safe against reentrancy but only makes those
-specific value transfers safe against reentrancy.</p>
-<h3 id="handle-errors-in-external-calls">Handle errors in external calls<a class="headerlink" href="#handle-errors-in-external-calls" title="Permanent link">&para;</a></h3>
-<p>Solidity offers low-level call methods that work on raw addresses: <code>address.call()</code>, <code>address.callcode()</code>, <code>address.delegatecall()</code>, and <code>address.send()</code>. These low-level methods never throw an exception, but will return <code>false</code> if the call encounters an exception. On the other hand, <em>contract calls</em> (e.g., <code>ExternalContract.doSomething()</code>) will automatically propagate a throw (for example, <code>ExternalContract.doSomething()</code> will also <code>throw</code> if <code>doSomething()</code> throws).</p>
-<p>If you choose to use the low-level call methods, make sure to handle the possibility that the call will fail, by checking the return value.</p>
+<p><code>send()</code>や <code>transfer()</code>を使うとリエントラントを防ぐことができますが、フォールバック機能が2,300を超えるガスを必要とする契約と互換性がないという犠牲を払って行います。
+また、<code>someAddress.call.value(ethAmount).gas(gasAmount)()</code>を使ってカスタム量のガスを転送することもできます。</p>
+<p>このトレードオフのバランスを取る1つのパターンは、両方を実装することです。
+<code>send()</code>または <code>transfer()</code>を使って、プッシュコンポーネントの場合は <code>call.value()()</code>を使用します。</p>
+<p>valueの送信に <code>send()</code>や `transfer() 'を排他的に使用しても、リエントラントに対しては安全ではなく、
+特定のvalueを再入可能で安全にするということだけを指摘しておきましょう。</p>
+<h3 id="_7">外部呼び出しのエラー処理<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>Solidityは、 <code>address.call()</code>、 <code>address.callcode()</code>、 <code>address.delegatecall()</code>、 <code>address.send()</code>のような生のアドレスで動作する低レベル呼び出しメソッドを提供します。
+これらの低レベルメソッドは決して例外をスローしませんが、呼び出しが例外を検出した場合は <code>false</code>を返します。
+一方、 <code>ExternalContract.doSomething()</code>などのコントラクト呼び出しは <code>doSomething()</code>がスローされると自動的にスローを伝播します(例えば、 <code>ExternalContract.doSomething()</code>も <code>throw</code>)。</p>
+<p>低レベルのコールメソッドを使用する場合は、戻り値をチェックしてコールが失敗する可能性を処理してください。</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
 <span class="n">someAddress</span><span class="p">.</span><span class="nb">send</span><span class="p">(</span><span class="mi">55</span><span class="p">);</span>
 <span class="n">someAddress</span><span class="p">.</span><span class="nb">call</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="mi">55</span><span class="p">)();</span> <span class="c1">// this is doubly dangerous, as it will forward all remaining gas and doesn&#39;t check for result</span>
@@ -895,8 +905,12 @@ specific value transfers safe against reentrancy.</p>
 <span class="n">ExternalContract</span><span class="p">(</span><span class="n">someAddress</span><span class="p">).</span><span class="n">deposit</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
 </pre></div>
 
-<h3 id="favor-pull-over-push-for-external-calls">Favor <em>pull</em> over <em>push</em> for external calls<a class="headerlink" href="#favor-pull-over-push-for-external-calls" title="Permanent link">&para;</a></h3>
-<p>External calls can fail accidentally or deliberately. To minimize the damage caused by such failures, it is often better to isolate each external call into its own transaction that can be initiated by the recipient of the call. This is especially relevant for payments, where it is better to let users withdraw funds rather than push funds to them automatically. (This also reduces the chance of <a href="https://github.com/ConsenSys/smart-contract-best-practices/#dos-with-block-gas-limit">problems with the gas limit</a>.)  Avoid combining multiple <code>send()</code> calls in a single transaction.</p>
+<h3 id="_8">外部呼び出しが失敗した場合のリスクヘッジ<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<p>外部呼び出しが誤ってまたは意図的に失敗する可能性があります。
+このような障害によって引き起こされる被害を最小限に抑えるには、各外部呼び出しを、受信者が開始できる独自のトランザクションに分離する方がよい場合があります。
+これは、特に支払いに関連します。ユーザーが自動的に資金を押し出すのではなく、資金を引き出すことをお勧めします。
+(これにより、<a href="https://github.com/ConsenSys/smart-contract-best-practices/#dos-with-block-gas-limit">ガスリミット問題</a>の可能性も減ります。)
+単一のトランザクションで複数の<code>send()</code>呼び出しを組み合わせることは避けてください。</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
 <span class="kd">contract</span> <span class="n">auction</span> <span class="p">{</span>
     <span class="kt">address</span> <span class="n">highestBidder</span><span class="p">;</span>
@@ -939,25 +953,37 @@ specific value transfers safe against reentrancy.</p>
 <span class="p">}</span>
 </pre></div>
 
-<h2 id="dont-assume-contracts-are-created-with-zero-balance">Don't assume contracts are created with zero balance<a class="headerlink" href="#dont-assume-contracts-are-created-with-zero-balance" title="Permanent link">&para;</a></h2>
-<p>An attacker can send wei to the address of a contract before it is created.  Contracts should not assume that its initial state contains a zero balance.  See <a href="https://github.com/ConsenSys/smart-contract-best-practices/issues/61">issue 61</a> for more details.</p>
-<h2 id="remember-that-on-chain-data-is-public">Remember that on-chain data is public<a class="headerlink" href="#remember-that-on-chain-data-is-public" title="Permanent link">&para;</a></h2>
-<p>Many applications require submitted data to be private up until some point in time in order to work. Games (eg. on-chain rock-paper-scissors) and auction mechanisms (eg. sealed-bid second-price auctions) are two major categories of examples. If you are building an application where privacy is an issue, take care to avoid requiring users to publish information too early.</p>
-<p>Examples:</p>
+<h2 id="0">新たにデプロイされたコントラクトの残高が0と決めつけない<a class="headerlink" href="#0" title="Permanent link">&para;</a></h2>
+<p>デプロイ前にコントラクトアドレスに対してweiを送信できます。
+コントラクトは初期状態に残高0が含まれていると想定すべきではありません。
+詳細は<a href="https://github.com/ConsenSys/smart-contract-best-practices/issues/61">issue 61</a>を参照してください。</p>
+<h2 id="_9">オンチェーンのデータは公開されていることを忘れない<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
+<p>多くのアプリケーションでは、データをある時点まで非公開にする必要があります。
+ゲーム(例えば、チェーン上の岩石 - はさみ)とオークションメカニズム(例えば、入札価格の第二価格オークション)は、2つの主要なカテゴリの例です。
+プライバシーが問題となるアプリケーションを構築する場合は、ユーザーに情報を早期に公開しないように注意してください。</p>
+<p>例:</p>
 <ul>
-<li>In rock paper scissors, require both players to submit a hash of their intended move first, then require both players to submit their move; if the submitted move does not match the hash throw it out.</li>
-<li>In an auction, require players to submit a hash of their bid value in an initial phase (along with a deposit greater than their bid value), and then submit their action bid value in the second phase.</li>
-<li>When developing an application that depends on a random number generator, the order should always be (1) players submit moves, (2) random number generated, (3) players paid out. The method by which random numbers are generated is itself an area of active research; current best-in-class solutions include Bitcoin block headers (verified through <a href="http://btcrelay.org">http://btcrelay.org</a>), hash-commit-reveal schemes (ie. one party generates a number, publishes its hash to "commit" to the value, and then reveals the value later) and <a href="http://github.com/randao/randao">RANDAO</a>.</li>
-<li>If you are implementing a frequent batch auction, a hash-commit scheme is also desirable.</li>
+<li>じゃんけんでは、両方のプレイヤーに、最初に意図した移動のハッシュを提出する必要があります。送信された移動がハッシュと一致しない場合、例外をthrowします。</li>
+<li>オークションでは、プレイヤーに初期段階で入札額のハッシュ値を提示し(入札額を超える入金額とともに)、第2段階でアクション入札額を提示する必要があります。</li>
+<li>乱数ジェネレータに依存するアプリケーションを開発する場合は、(1)プレイヤーが移動を提出する、(2)乱数が生成される、(3)プレイヤーが支払う順序が常に必要です。乱数が生成される方法自体は、活発な研究の領域です。現在のクラス最高のソリューションには、Bitcoinブロックヘッダー(<a href="http://btcrelay.orgで検証済み">http://btcrelay.orgで検証済み</a>)、ハッシュコミット公開スキーム(すなわち、一方の当事者が数値を生成し、そのハッシュを公開して値にコミットし、 後でその値を明らかにする)と<a href="http://github.com/randao/randao">RANDAO</a>。</li>
+<li>頻繁なバッチオークションを実装する場合、ハッシュコミットスキームも望ましいです。</li>
 </ul>
-<h2 id="in-2-party-or-n-party-contracts-beware-of-the-possibility-that-some-participants-may-drop-offline-and-not-return">In 2-party or N-party contracts, beware of the possibility that some participants may "drop offline" and not return<a class="headerlink" href="#in-2-party-or-n-party-contracts-beware-of-the-possibility-that-some-participants-may-drop-offline-and-not-return" title="Permanent link">&para;</a></h2>
-<p>Do not make refund or claim processes dependent on a specific party performing a particular action with no other way of getting the funds out. For example, in a rock-paper-scissors game, one common mistake is to not make a payout until both players submit their moves; however, a malicious player can "grief" the other by simply never submitting their move - in fact, if a player sees the other player's revealed move and determines that they lost, they have no reason to submit their own move at all. This issue may also arise in the context of state channel settlement. When such situations are an issue, (1) provide a way of circumventing non-participating participants, perhaps through a time limit, and (2) consider adding an additional economic incentive for participants to submit information in all of the situations in which they are supposed to do so.</p>
-<h2 id="solidity-specific-recommendations">Solidity specific recommendations<a class="headerlink" href="#solidity-specific-recommendations" title="Permanent link">&para;</a></h2>
-<h3 id="_2"><!-- --><a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
-<p>The following recommendations are specific to Solidity, but may also be instructive for developing smart contracts in other languages.</p>
-<h2 id="enforce-invariants-with-assert">Enforce invariants with <code>assert()</code><a class="headerlink" href="#enforce-invariants-with-assert" title="Permanent link">&para;</a></h2>
-<p>An assert guard triggers when an assertion fails - such as an invariant property changing. For example, the token to ether issuance ratio, in a token issuance contract, may be fixed. You can verify that this is the case at all times with an <code>assert()</code>. Assert guards should often be combined with other techniques, such as pausing the contract and allowing upgrades. (Otherwise, you may end up stuck, with an assertion that is always failing.)</p>
-<p>Example:</p>
+<h2 id="2n">2者契約またはN者契約では、一部の参加者が「オフラインになる」可能性があることに注意する<a class="headerlink" href="#2n" title="Permanent link">&para;</a></h2>
+<p>特定の要求を行っている特定の当事者に応じて払い戻しをしたり、他の方法で資金を引き出すことはできません。 
+例えば、じゃんけんでは、共通の間違いの1つは、両方のプレーヤーが自分の動きを決定するまで支払いを行わないことです。
+しかし、悪意のあるプレイヤーは、決して移動を提出しないことによって他のプレイヤーを「悲しませる」ことができます。
+実際に、プレイヤーが他のプレイヤーの明らかな動きを見て、失ったと判断した場合、この問題はステートの決済チャネルのコンテキストでも発生する可能性があります。
+そのような状況が問題である場合、(1)おそらく期限を過ぎて参加していない参加者を迂回させる方法を提供する、(2)参加者が参加しているすべての状況で情報を提出するための追加の経済的インセンティブを加えることを検討するそうするはずです。</p>
+<h2 id="solidity">Solidity特有の推奨事項<a class="headerlink" href="#solidity" title="Permanent link">&para;</a></h2>
+<h3 id="_10"><!-- --><a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<p>以下の推奨事項は、Solidity固有のものですが、他の言語でスマートコントラクトを作成するための参考にもなります。</p>
+<h2 id="assert"><code>assert()</code>で不変量を強制する<a class="headerlink" href="#assert" title="Permanent link">&para;</a></h2>
+<p>アサーションが失敗した場合（不変プロパティの変更など）、アサートガードがトリガーされます。
+例えば、トークン発行契約におけるトークンとetherの発行比率は固定されていてもよい。
+これが常に <code>assert（）</code>の場合に当てはまることを確認することができます。
+アサートガードは、契約を一時停止し、アップグレードを許可するなど、他の手法と組み合わせることがよくあります。
+（でなければあなたはいつも失敗しているアサーションで立ち往生するかもしれません。）</p>
+<p>例:</p>
 <div class="highlight"><pre><span></span><span class="kd">contract</span> <span class="n">Token</span> <span class="p">{</span>
     <span class="kd">mapping</span><span class="p">(</span><span class="kt">address</span> <span class="o">=&gt;</span> <span class="kt">uint</span><span class="p">)</span> <span class="kr">public</span> <span class="n">balanceOf</span><span class="p">;</span>
     <span class="kt">uint</span> <span class="kr">public</span> <span class="n">totalSupply</span><span class="p">;</span>
@@ -970,37 +996,47 @@ specific value transfers safe against reentrancy.</p>
 <span class="p">}</span>
 </pre></div>
 
-<p>Note that the assertion is <em>not</em> a strict equality of the balance because the contract can be <a href="#ether-forcibly-sent">forcibly sent ether</a> without going through the <code>deposit()</code> function!</p>
-<h2 id="use-assert-and-require-properly">Use <code>assert()</code> and <code>require()</code> properly<a class="headerlink" href="#use-assert-and-require-properly" title="Permanent link">&para;</a></h2>
-<p>In Solidity 0.4.10 <code>assert()</code> and <code>require()</code> were introduced. <code>require(condition)</code> is meant to be used for input validation, which should be done on any user input, and reverts if the condition is false. <code>assert(condition)</code> also reverts if the condition is false but should be used only for invariants: internal errors or to check if your contract has reached an invalid state. Following this paradigm allows formal analysis tools to verify that the invalid opcode can never be reached: meaning no invariants in the code are violated and that the code is formally verified.</p>
-<h2 id="beware-rounding-with-integer-division">Beware rounding with integer division<a class="headerlink" href="#beware-rounding-with-integer-division" title="Permanent link">&para;</a></h2>
-<p>All integer division rounds down to the nearest integer. If you need more precision, consider using a multiplier, or store both the numerator and denominator.</p>
-<p>(In the future, Solidity will have a fixed-point type, which will make this easier.)</p>
+<p>アサーションは、契約が <code>deposit（）</code>関数を経由せずに強制的にetherを送信することができるので、残高が厳密にイコールではないことに注意してください。</p>
+<h2 id="assert-require-solidity-0410"><code>assert()</code> と <code>require()</code> プロパティを使う (Solidity &gt;= 0.4.10)<a class="headerlink" href="#assert-require-solidity-0410" title="Permanent link">&para;</a></h2>
+<p>Solidity 0.4.10から<code>assert()</code>と<code>require()</code>が導入されました。
+<code>require（condition）</code>は入力の検証に使用されることを意味します。
+これはユーザの入力に対して実行する必要があり、条件がfalseの場合に元に戻ります。
+<code>assert（condition）</code>は、条件がfalseの場合でも元に戻りますが、内部エラーや契約が無効な状態になったかどうかを確認するためにのみ使用してください。
+このパラダイムに従うと、正式な分析ツールは、無効なオペコードに到達することができないことを検証することができます。
+つまり、コード内のインバリアントが違反されていないことと、コードが正式に検証されたことを意味します。</p>
+<h2 id="_11">整数除算での丸めに注意する<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h2>
+<p>すべての整数の除算は、最も近い整数に切り下げられます。さらに精度が必要な場合は、乗数を使用するか、分子と分母の両方を格納することを検討してください。</p>
+<p>(将来的には、Solidityは固定小数点型を使用するため、これは簡単になります)</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
-<span class="kt">uint</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// Result is 2, all integer divison rounds DOWN to the nearest integer</span>
+<span class="kt">uint</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// 結果は2で、すべての整数除算がDOWNから最も近い整数に丸められます。</span>
 </pre></div>
 
-<p>Using a multiplier prevents rounding down, this multiplier needs to be accounted for when working with x in the future:</p>
+<p>乗数を使用すると四捨五入を防ぐことができます。この乗数は、将来xで作業するときに考慮する必要があります。</p>
 <div class="highlight"><pre><span></span><span class="c1">// good</span>
 <span class="kt">uint</span> <span class="n">multiplier</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
 <span class="kt">uint</span> <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="n">multiplier</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
 </pre></div>
 
-<p>Storing the numerator and denominator means you can calculate the result of <code>numerator/denominator</code> off-chain:
+<p>分子と分母を格納することは、 <code>分子/分母</code>の結果をオフチェーンで計算できることを意味します:
 <div class="highlight"><pre><span></span><span class="c1">// good</span>
 <span class="kt">uint</span> <span class="n">numerator</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
 <span class="kt">uint</span> <span class="n">denominator</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
 </pre></div></p>
-<h2 id="remember-that-ether-can-be-forcibly-sent-to-an-account">Remember that Ether can be forcibly sent to an account<a class="headerlink" href="#remember-that-ether-can-be-forcibly-sent-to-an-account" title="Permanent link">&para;</a></h2>
-<p>Beware of coding an invariant that strictly checks the balance of a contract.</p>
-<p>An attacker can forcibly send wei to any account and this cannot be prevented (not even with a fallback function that does a <code>revert()</code>).</p>
-<p>The attacker can do this by creating a contract, funding it with 1 wei, and invoking
-<code>selfdestruct(victimAddress)</code>.  No code is invoked in <code>victimAddress</code>, so it
-cannot be prevented.</p>
-<h2 id="be-aware-of-the-tradeoffs-between-abstract-contracts-and-interfaces">Be aware of the tradeoffs between abstract contracts and interfaces<a class="headerlink" href="#be-aware-of-the-tradeoffs-between-abstract-contracts-and-interfaces" title="Permanent link">&para;</a></h2>
-<p>Both interfaces and abstract contracts provide one with a customizable and re-usable approach for smart contracts. Interfaces, which were introduced in Solidity 0.4.11, are similar to abstract contracts but cannot have any functions implemented. Interfaces also have limitations such as not being able to access storage or inherit from other interfaces which generally makes abstract contracts more practical. Although, interfaces are certainly useful for designing contracts prior to implementation. Additionally, it is important to keep in mind that if a contract inherits from an abstract contract it must implement all non-implemented functions via overriding or it will be abstract as well.</p>
-<h2 id="keep-fallback-functions-simple">Keep fallback functions simple<a class="headerlink" href="#keep-fallback-functions-simple" title="Permanent link">&para;</a></h2>
-<p><a href="http://solidity.readthedocs.io/en/latest/contracts.html#fallback-function">Fallback functions</a> are called when a contract is sent a message with no arguments (or when no function matches), and only has access to 2,300 gas when called from a <code>.send()</code> or <code>.transfer()</code>. If you wish to be able to receive Ether from a <code>.send()</code> or <code>.transfer()</code>, the most you can do in a fallback function is log an event. Use a proper function if a computation or more gas is required.</p>
+<h2 id="ether">Etherは強制的にアカウントに送ることが出来る<a class="headerlink" href="#ether" title="Permanent link">&para;</a></h2>
+<p>厳密にコントラクトの残高をチェックする不変量をコーディングすることに注意してください。</p>
+<p>攻撃者は任意のアカウントにweiを強制的に送ることができ、これは防ぐことができません（ <code>revert（）</code>を実行するフォールバック関数でさえも）。</p>
+<p>攻撃者はコントラクトを作成し、1weiで資金を調達し、 <code>selfdestruct（victimAddress）</code>を呼び出すことでこれを行うことができます。
+<code>victimAddress</code>ではコードが呼び出されないので、防ぐことはできません。</p>
+<h2 id="_12">抽象的な契約とインタフェースの間のトレードオフに注意してください<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h2>
+<p>インタフェースと抽象契約の両方は、スマートコントラクトのためのカスタマイズ可能で再利用可能なアプローチを提供します。
+Solidity 0.4.11で導入されたインタフェースは、抽象的な契約に似ていますが、実装されている機能を持つことはできません。
+インタフェースには、ストレージにアクセスできない、または抽象コントラクトをより実用的にする他のインタフェースから継承するなどの制限もあります。
+しかし、インタフェースは実装前に契約を設計する上では確かに有用です。
+さらに、契約が抽象コントラクトから継承する場合は、オーバーライドを使用して実装されていないすべての機能を実装する必要があること、または抽象的であることにも留意することが重要です。</p>
+<h2 id="fallback">fallback関数をシンプルに保つ<a class="headerlink" href="#fallback" title="Permanent link">&para;</a></h2>
+<p><a href="http://solidity.readthedocs.io/en/latest/contracts.html#fallback-function">Fallback functions</a>は、引数に引数なしのメッセージが送信されたとき（または関数が一致しないとき）に呼び出され、 <code>.send（）</code>または <code>.transfer（）</code>から呼び出されたとき2,300個のガスにアクセスできます。
+あなたが <code>.send（）</code>や <code>.transfer（）</code>からEtherを受信できるようにしたいのであれば、fallback関数でできるのはイベントを記録することです。
+計算以上のガスが必要な場合は、適切な関数を使用してください。</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
 <span class="kd">function</span><span class="p">()</span> <span class="kr">payable</span> <span class="p">{</span> <span class="n">balances</span><span class="p">[</span><span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">msg</span><span class="p">.</span><span class="n">value</span><span class="p">;</span> <span class="p">}</span>
 
@@ -1010,8 +1046,12 @@ cannot be prevented.</p>
 <span class="kd">function</span><span class="p">()</span> <span class="kr">payable</span> <span class="p">{</span> <span class="n">LogDepositReceived</span><span class="p">(</span><span class="nb">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">);</span> <span class="p">}</span>
 </pre></div>
 
-<h2 id="explicitly-mark-visibility-in-functions-and-state-variables">Explicitly mark visibility in functions and state variables<a class="headerlink" href="#explicitly-mark-visibility-in-functions-and-state-variables" title="Permanent link">&para;</a></h2>
-<p>Explicitly label the visibility of functions and state variables. Functions can be specified as being <code>external</code>, <code>public</code>, <code>internal</code> or <code>private</code>. Please understand the differences between them, for example, <code>external</code> may be sufficient instead of <code>public</code>. For state variables, <code>external</code> is not possible. Labeling the visibility explicitly will make it easier to catch incorrect assumptions about who can call the function or access the variable.</p>
+<h2 id="_13">関数と状態変数の可視性を明示的にマークする<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h2>
+<p>関数と状態変数の可視性を明示的にラベル付けする。
+関数は <code>external</code>、<code>public</code>、 <code>internal</code>、<code>private</code>のように指定できます。
+それらの違いを理解してください。たとえば、 <code>public</code>ではなく<code>external</code>で十分でしょう。
+状態変数については、「外部」は不可能である。
+可視性を明示的にラベルすると、関数を呼び出すことができるか、変数にアクセスできるかについての間違った前提を簡単にキャッチできます。</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
 <span class="kt">uint</span> <span class="n">x</span><span class="p">;</span> <span class="c1">// the default is internal for state variables, but it should be made explicit</span>
 <span class="kd">function</span> <span class="n">buy</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// the default is public</span>
@@ -1033,8 +1073,10 @@ cannot be prevented.</p>
 <span class="p">}</span>
 </pre></div>
 
-<h2 id="lock-pragmas-to-specific-compiler-version">Lock pragmas to specific compiler version<a class="headerlink" href="#lock-pragmas-to-specific-compiler-version" title="Permanent link">&para;</a></h2>
-<p>Contracts should be deployed with the same compiler version and flags that they have been tested the most with. Locking the pragma helps ensure that contracts do not accidentally get deployed using, for example, the latest compiler which may have higher risks of undiscovered bugs. Contracts may also be deployed by others and the pragma indicates the compiler version intended by the original authors.</p>
+<h2 id="_14">プラグマを特定のコンパイラのバージョンにロックする<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h2>
+<p>コントラクトは、最もよくテストされたものと同じコンパイラ・バージョンとフラグでデプロイする必要があります。
+プラグマをロックすると、未知のバグのリスクが高い最新のコンパイラなどを使用して、契約が誤って展開されないようになります。
+コントラクトは他の人によっても展開される可能性があり、プラグマはオリジナルの著者が意図したコンパイラのバージョンを示します。</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
 <span class="kr">pragma solidity</span> <span class="o">^</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">.</span><span class="mi">4</span><span class="p">;</span>
 
@@ -1043,8 +1085,9 @@ cannot be prevented.</p>
 <span class="kr">pragma solidity</span> <span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">.</span><span class="mi">4</span><span class="p">;</span>
 </pre></div>
 
-<h2 id="differentiate-functions-and-events">Differentiate functions and events<a class="headerlink" href="#differentiate-functions-and-events" title="Permanent link">&para;</a></h2>
-<p>Favor capitalization and a prefix in front of events (we suggest <em>Log</em>), to prevent the risk of confusion between functions and events. For functions, always start with a lowercase letter, except for the constructor.</p>
+<h2 id="_15">関数とイベントの命名規則<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h2>
+<p>関数とイベントの混乱の危険を避けるため、イベント名は大文字で始め、大文字の前に接頭辞を付ける（*Log*を推奨する）。
+関数の場合はコンストラクタを除き、常に小文字で始めます。</p>
 <div class="highlight"><pre><span></span><span class="c1">// bad</span>
 <span class="kd">event</span> <span class="n">Transfer</span><span class="p">()</span> <span class="p">{}</span>
 <span class="kd">function</span> <span class="n">transfer</span><span class="p">()</span> <span class="p">{}</span>
@@ -1054,10 +1097,13 @@ cannot be prevented.</p>
 <span class="kd">function</span> <span class="n">transfer</span><span class="p">()</span> <span class="kr">external</span> <span class="p">{}</span>
 </pre></div>
 
-<h2 id="prefer-newer-solidity-constructs">Prefer newer Solidity constructs<a class="headerlink" href="#prefer-newer-solidity-constructs" title="Permanent link">&para;</a></h2>
-<p>Prefer constructs/aliases such as <code>selfdestruct</code> (over <code>suicide</code>) and <code>keccak256</code> (over <code>sha3</code>).  Patterns like <code>require(msg.sender.send(1 ether))</code> can also be simplified to using <code>transfer()</code>, as in <code>msg.sender.transfer(1 ether)</code>.</p>
-<h2 id="be-aware-that-built-ins-can-be-shadowed">Be aware that 'Built-ins' can be shadowed<a class="headerlink" href="#be-aware-that-built-ins-can-be-shadowed" title="Permanent link">&para;</a></h2>
-<p>It is currently possible to <a href="https://en.wikipedia.org/wiki/Variable_shadowing">shadow</a> built-in globals in Solidity. This allows contracts to override the functionality of built-ins such as <code>msg</code> and <code>revert()</code>. Although this <a href="https://github.com/ethereum/solidity/issues/1249">is intended</a>, it can mislead users of a contract as to the contract's true behavior.</p>
+<h2 id="solidity_1">より新しいSolidity構造を用いる<a class="headerlink" href="#solidity_1" title="Permanent link">&para;</a></h2>
+<p><code>selfdestruct</code>（<code>suicide</code>）と <code>keccak256</code>（<code>sha3</code>以上）のような構造体/エイリアスが好ましいです。
+<code>require（msg.sender.send（1 ether））</code>のようなパターンは <code>msg.sender.transfer（1 ether）</code>のように <code>transfer（）</code>を使って単純化することもできます。</p>
+<h2 id="_16">ビルトインはシャドーイング出来ることに注意する<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h2>
+<p>Solidityの組み込みグローバルを[shadow]（<a href="https://en.wikipedia.org/wiki/Variable_shadowing">https://en.wikipedia.org/wiki/Variable_shadowing</a>）することは現在可能です。
+これにより、契約は <code>msg</code>や<code>revert（）</code>などの組み込み関数の機能をオーバーライドすることができます。
+これは意図されていますが（<a href="https://github.com/ethereum/solidity/issues/1249">https://github.com/ethereum/solidity/issues/1249</a>）、コントラクトの真の振る舞いに関してユーザーを誤解させる可能性があります。</p>
 <div class="highlight"><pre><span></span><span class="kd">contract</span> <span class="n">PretendingToRevert</span> <span class="p">{</span>
     <span class="kd">function</span> <span class="n">revert</span><span class="p">()</span> <span class="kr">internal</span> <span class="kr">constant</span> <span class="p">{}</span>
 <span class="p">}</span>
@@ -1069,9 +1115,11 @@ cannot be prevented.</p>
 <span class="p">}</span>
 </pre></div>
 
-<p>Contract users (and auditors) should be aware of the full smart contract source code of any application they intend to use. </p>
-<h2 id="avoid-using-txorigin">Avoid using <code>tx.origin</code><a class="headerlink" href="#avoid-using-txorigin" title="Permanent link">&para;</a></h2>
-<p>Never use <code>tx.origin</code> for authorization, another contract can have a method which will call your contract (where the user has some funds for instance) and your contract will authorize that transaction as your address is in <code>tx.origin</code>.</p>
+<p>ユーザーは、使用するアプリケーションのコントラクトコードを認識している必要があります。</p>
+<h2 id="txorigin"><code>tx.origin</code>を使わない<a class="headerlink" href="#txorigin" title="Permanent link">&para;</a></h2>
+<p><code>tx.origin</code>を絶対に使用しないでください。
+あなたのコントラクトにcallする方法（例えば、ユーザーに資金がある場合）と、
+あなたのアドレスが<code>tx.origin</code>にあるようにトランザクションを承認する方法があります。</p>
 <div class="highlight"><pre><span></span>pragma solidity 0.4.18;
 
 contract MyContract {
@@ -1106,14 +1154,17 @@ contract AttackingContract {
 }
 </pre></div>
 
-<p>You should use <code>msg.sender</code> for authorization (if another contract calls your contract <code>msg.sender</code> will be the address of the contract and not the address of the user who called the contract).</p>
-<p>You can read more about it here: <a href="https://solidity.readthedocs.io/en/develop/security-considerations.html#tx-origin">Solidity docs</a></p>
-<p>Besides the issue with authorization, there is a chance that <code>tx.origin</code> will be removed from the Ethereum protocol in the future, so code that uses <code>tx.origin</code> won't be compatible with future releases <a href="https://ethereum.stackexchange.com/questions/196/how-do-i-make-my-dapp-serenity-proof/200#200">Vitalik: 'Do NOT assume that tx.origin will continue to be usable or meaningful.'</a></p>
-<p>It's also worth mentioning that by using <code>tx.origin</code> you're limiting interoperability between contracts because the contract that uses tx.origin cannot be used by another contract as a contract can't be the <code>tx.origin</code>.</p>
-<h2 id="deprecatedhistorical-recommendations">Deprecated/historical recommendations<a class="headerlink" href="#deprecatedhistorical-recommendations" title="Permanent link">&para;</a></h2>
-<p>These are recommendations which are no longer relevant due to changes in the protocol or improvements to solidity. They are recorded here for posterity and awareness. </p>
-<h3 id="beware-division-by-zero-solidity-04">Beware division by zero (Solidity &lt; 0.4)<a class="headerlink" href="#beware-division-by-zero-solidity-04" title="Permanent link">&para;</a></h3>
-<p>Prior to version 0.4, Solidity <a href="https://github.com/ethereum/solidity/issues/670">returns zero</a> and does not <code>throw</code> an exception when a number is divided by zero. Ensure you're running at least version 0.4.</p>
+<p>承認のために <code>msg.sender</code>を使用するべきです
+（別のコントラクトがあなたのコントラクトを呼び出す場合、<code>msg.sender</code>はコントラクトのアドレスであり、ユーザーのアドレスではありません）。</p>
+<p>詳細はこちら: <a href="https://solidity.readthedocs.io/en/develop/security-considerations.html#tx-origin">Solidity docs</a></p>
+<p>また、将来 <code>tx.origin</code> がEthereumプロトコルから削除される可能性があるので、 <code>tx.origin</code>を使用するコードは将来のリリースと互換性がありません。
+[Vitalik：'tx.originは引き続き使用可能または意味のあるものと仮定しないでください。]（<a href="https://ethereum.stackexchange.com/questions/196/how-do-i-make-my-dapp-serenity-proof/200">https://ethereum.stackexchange.com/questions/196/how-do-i-make-my-dapp-serenity-proof/200</a>＃200）</p>
+<p><code>tx.origin</code>を使うコントラクトは他のコントラクトで使うことができないので、
+コントラクト間の相互運用性を制限していることにも言及する価値があります。</p>
+<h2 id="_17">廃止予定/過去の推奨事項<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h2>
+<p>これらは、プロトコルの変更や強固性の改善によりもはや関連性のない推奨事項です。後世のためにここに記録されています。</p>
+<h3 id="solidity-04">ゼロによる除算に注意 (Solidity &lt; 0.4)<a class="headerlink" href="#solidity-04" title="Permanent link">&para;</a></h3>
+<p>バージョン0.4以前のSolidityでは、数値をゼロで割ったときに例外を「throw」しません。 バージョン0.4以上で動作していることを確認してください。</p>
                 
                   
                 
@@ -1132,7 +1183,7 @@ contract AttackingContract {
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../general_philosophy/" title="General Philosophy" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../general_philosophy/" title="基本的な知識" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1141,19 +1192,19 @@ contract AttackingContract {
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                General Philosophy
+                基本的な知識
               </span>
             </div>
           </a>
         
         
-          <a href="../known_attacks/" title="Known Attacks" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../known_attacks/" title="既知の攻撃方法" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Known Attacks
+                既知の攻撃方法
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

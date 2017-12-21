@@ -1,4 +1,5 @@
-This is a list of resources that will often highlight discovered exploits in Ethereum or Solidity. The official source of security notifications is the Ethereum Blog, but in many cases, vulnerabilities will be disclosed and discussed earlier in other locations.
+これは、EthereumまたはSolidityで発見されたエクスプロイトを強調するリソースのリストです。
+正式なセキュリティ通知のソースはEthereum Blogですが、多くの場合、脆弱性は他の場所で以前に公開され、議論されます。
 
 - [Ethereum Blog](https://blog.ethereum.org/): The official Ethereum blog
   - [Ethereum Blog - Security only](https://blog.ethereum.org/category/security/): All blog posts that are tagged *Security*
@@ -10,13 +11,15 @@ This is a list of resources that will often highlight discovered exploits in Eth
 - [Reddit](https://www.reddit.com/r/ethereum)
 - [Network Stats](https://ethstats.net/)
 
-It's highly recommended that you *regularly* read all these sources, as exploits they note may impact your contracts.
+これらのソースはすべてコントラクトに影響を与える可能性があるため、定期的にすべてのソースを読むことを強くお勧めします。
 
-Additionally, here is a list of Ethereum core developers who may write about security, and see the [bibliography](https://github.com/ConsenSys/smart-contract-best-practices#smart-contract-security-bibliography) for more from the community.
+さらに、セキュリティについて書いているかもしれないEthereumコア開発者のリストがあります。
+[参考文献]（https://github.com/ConsenSys/smart-contract-best-practices#smart-contract-security-bibliography）を参照してください。
 
 - **Vitalik Buterin**: [Twitter](https://twitter.com/vitalikbuterin), [Github](https://github.com/vbuterin), [Reddit](https://www.reddit.com/user/vbuterin), [Ethereum Blog](https://blog.ethereum.org/author/vitalik-buterin/)
 - **Dr. Christian Reitwiessner**: [Twitter](https://twitter.com/ethchris), [Github](https://github.com/chriseth), [Ethereum Blog](https://blog.ethereum.org/author/christian_r/)
 - **Dr. Gavin Wood**: [Twitter](https://twitter.com/gavofyork), [Blog](http://gavwood.com/), [Github](https://github.com/gavofyork)
 - **Vlad Zamfir**: [Twitter](https://twitter.com/vladzamfir), [Github](https://github.com/vladzamfir), [Ethereum Blog](https://blog.ethereum.org/author/vlad/)
 
-Beyond following core developers, it is critical to participate in the wider blockchain-related security community - as security disclosures or observations will come through a variety of parties.
+コア開発者にとどまらず、より広範なブロックチェーン関連のセキュリティコミュニティに参加することが重要です。
+セキュリティの開示や観察をさまざまな関係者が行うためです。

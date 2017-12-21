@@ -1,40 +1,41 @@
-When launching a contract that will have substantial funds or is required to be mission critical, it is important to include proper documentation. Some documentation related to security includes:
+多額の資金を必要とするコントラクトやミッションクリティカルなコントラクトが必要な場合は、適切なドキュメントを添付することが重要です。
+関連するドキュメントには以下のものがあります。
 
-## Specifications and Rollout Plans
+## 仕様とロールアウトの計画
 
-- Specs, diagrams, state machines, models, and other documentation that helps auditors, reviewers, and the community understand what the system is intended to do.
-- Many bugs can be found just from the specifications, and they are the least costly to fix.
-- Rollout plans that include details listed [here](https://github.com/ConsenSys/smart-contract-best-practices#contract-rollout), and target dates.
+- 監査員、査読者、およびコミュニティが、システムが意図するものを理解するのに役立つ仕様、図、状態マシン、モデル、およびその他のドキュメンテーション。
+- 多くのバグは仕様書から見つけることができ、修正するのが最もコストがかかりません。
+- [ここに](https://github.com/ConsenSys/smart-contract-best-practices#contract-rollout)記載されている詳細、及び対象日付を含むロールアウトの計画。
 
-## Status
+## 情報
 
-- Where current code is deployed
-- Compiler version, flags used, and steps for verifying the deployed bytecode matches the source code
-- Compiler versions and flags that will be used for the different phases of rollout.
-- Current status of deployed code (including outstanding issues, performance stats, etc.)
+- 最新版のコードがデプロイされている場所。
+- コンパイラのバージョン、使用されるフラグ、およびデプロイされたバイトコード。
+- ロールアウトで使用されるコンパイラのバージョンとフラグ。
+- デプロイされたコードの現状（未解決の問題、パフォーマンス統計などを含む）
 
-## Known Issues
+## 既知の問題
 
-- Key risks with contract
-  - e.g., You can lose all your money, hacker can vote for certain outcomes
-- All known bugs/limitations
-- Potential attacks and mitigants
-- Potential conflicts of interest (e.g., will be using yourself, like Slock.it did with the DAO)
+- コントラクト上の主要リスク
+  - 例えば全てのお金を失う、ハッカーが特定の結果に投票できる
+- 既知のバグ、制限事項
+- 潜在的な攻撃と緩和策
+- 潜在的な利益相反 (例: will be using yourself, like Slock.it did with the DAO)
 
-## History
+## 歴史
 
-- Testing (including usage stats, discovered bugs, length of testing)
-- People who have reviewed code (and their key feedback)
+- テスト（使用統計、発見されたバグ、テストの長さを含む）
+- コードをレビューした人(そして主要なフィードバック)
 
-## Procedures
+## 手順
 
-- Action plan in case a bug is discovered (e.g., emergency options, public notification process, etc.)
-- Wind down process if something goes wrong (e.g., funders will get percentage of your balance before attack, from remaining funds)
-- Responsible disclosure policy (e.g., where to report bugs found, the rules of any bug bounty program)
-- Recourse in case of failure (e.g., insurance, penalty fund, no recourse)
+- バグが発見された場合の行動計画(例:緊急のオプション、公開通知プロセスなど)
+- 何かが間違っている場合、プロセスを終了する（たとえば、資金提供者は、残高から攻撃前に残高の割合を取得します）
+- 責任ある開示方針（例えば、発見されたバグを報告する場所、バグバウンティプログラムのルール）
+- 失敗の場合の援助（例えば、保険、ペナルティ・ファンド、償還不可）
 
-## Contact Information
+## 問い合わせ先
 
-- Who to contact with issues
-- Names of programmers and/or other important parties
-- Chat room where questions can be asked
+- 問題が起こった時の問い合わせ先
+- プログラマーやその他の重要な関係者の名前
+- 質問が出来るチャットルーム

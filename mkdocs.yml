@@ -1,7 +1,7 @@
 # Refer to https://github.com/mkdocs/mkdocs/blob/master/mkdocs.yml for a working example
 site_name: Ethereum Smart Contract Best Practices(日本語訳)
 site_url: https://github.com/msykd/smart-contract-best-practices/
-site_description: 
+site_description:
 site_author: msykd
 repo_url: https://github.com/msykd/smart-contract-best-practices/
 
@@ -11,12 +11,12 @@ pages:
   - 推奨する実装方法: recommendations.md
   - 既知の攻撃方法: known_attacks.md
   - リスクの備え方: software_engineering.md
-  - Token specific recommendations: tokens.md
+  - トークン固有の推奨事項: tokens.md
   - ドキュメント化の手法: documentation_procedures.md
   - 便利なツール: security_tools.md
   - セキュリティに関する情報: security_notifications.md
-  - Smart Contract Security Bibliography: bibliography.md
-  - List of Smart Contract Bug Bounty Programs: bug_bounty_list.md
+  - スマートコントラクトのセキュリティに関する参考文献: bibliography.md
+  - スマートコントラクトのバグバウンティプログラム: bug_bounty_list.md
   - About:
     - Reviewers: about/reviewers.md
     - License: about/license.md

@@ -1,5 +1,4 @@
 
-The following are ongoing bug bounty programs, either focused on, or including smart contracts in their scope. Issues and PRs are welcome to add new bounties, or remove those which are no longer active.
 以下は、現行のバグバウンティプログラムです。これらのプログラムは、そのスコープにスマートコントラクトに焦点を当てたものであったり、スマートコントラクトを含むものです。IssueやPRは大歓迎です。新たなバウンティを追加したり、もはやアクティブではないバウンティを削除したりするのに役立つでしょう。
 
 * [0xProject](https://0xproject.com/wiki#Bug-Bounty): 2018年9月にローンチ、最大支払額$100,000

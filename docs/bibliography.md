@@ -1,5 +1,7 @@
 A lot of this document contains code, examples and insights gained from various parts already written by the community.
 Here are some of them.  Feel free to add more.
+本ドキュメントの多くは、ミュニティによってすでに発表された様々な知見から得られたコード、例、識見を含んでいます。
+それらのいくつかをここに紹介します。他に紹介すべきものがあれば、気軽に追加してください。
 
 ##### By Ethereum core developers
 

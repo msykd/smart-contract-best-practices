@@ -1,9 +1,9 @@
 これは、EthereumまたはSolidityで発見されたエクスプロイトを強調するリソースのリストです。
 正式なセキュリティ通知のソースはEthereum Blogですが、多くの場合、脆弱性は他の場所で以前に公開され、議論されます。
 
-- [Ethereum Blog](https://blog.ethereum.org/): The official Ethereum blog
-  - [Ethereum Blog - Security only](https://blog.ethereum.org/category/security/): All blog posts that are tagged *Security*
-- [Ethereum Gitter](https://gitter.im/orgs/ethereum/rooms) chat rooms
+- [Ethereum Blog](https://blog.ethereum.org/): Ethereum公式ブログ
+  - [Ethereum Blog - Security only](https://blog.ethereum.org/category/security/): *Security* とタグ付けされた全てのブログポスト
+- [Ethereum Gitter](https://gitter.im/orgs/ethereum/rooms) チャットルーム
   - [Solidity](https://gitter.im/ethereum/solidity)
   - [Go-Ethereum](https://gitter.im/ethereum/go-ethereum)
   - [CPP-Ethereum](https://gitter.im/ethereum/cpp-ethereum)

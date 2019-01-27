@@ -14,6 +14,7 @@ pages:
   - トークン固有の推奨事項: tokens.md
   - ドキュメント化の手法: documentation_procedures.md
   - 便利なツール: security_tools.md
+  - セキュリティ関連EIP: security_eips.md
   - セキュリティに関する情報: security_notifications.md
   - スマートコントラクトのセキュリティに関する参考文献: bibliography.md
   - スマートコントラクトのバグバウンティプログラム: bug_bounty_list.md

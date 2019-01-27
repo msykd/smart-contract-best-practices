@@ -42,7 +42,7 @@ function makeUntrustedWithdrawal(uint amount) {
 *raw calls* (`someAddress.call()`) や *contract calls* (`ExternalContract.someMethod()`)の
 どちらを使用する場合でも、悪質なコードが実行される可能性があるとします。外部コントラクトが悪意のあるものではないとしても、それが呼び出すすべてのコントラクトによって悪質なコードが実行される可能性があります。
 
-特に危険なのは、悪意のあるコードが制御フローを乗っ取って再入可能性による脆弱性を引き起こす可能性があることです。(この問題の詳細な議論については、[Reentrancy](https://github.com/ConsenSys/smart-contract-best-practices/known_attacks#reentrancy)を参照してください)
+特に危険なのは、悪意のあるコードが制御フローを乗っ取ってリエントラント（再入可能性）による脆弱性を引き起こす可能性があることです。(この問題の詳細な議論については、[Reentrancy](https://github.com/ConsenSys/smart-contract-best-practices/known_attacks#reentrancy)を参照してください)
 
 信頼できない外部コントラクトにコールをする場合は、*コール後の状態変化は避けてください*。このパターンは、[checks-effects-interactions pattern](http://solidity.readthedocs.io/en/develop/security-considerations.html?highlight=check%20effects#use-the-checks-effects-interactions-pattern)とも呼ばれます。
 
@@ -52,20 +52,20 @@ function makeUntrustedWithdrawal(uint amount) {
 etherを送信する方法として
 `someAddress.send()`, `someAddress.transfer()`, `someAddress.call.value()()`などがあります。
 
-- `someAddress.send()`と`someAddress.transfer()`はリエントラント(再入可能)性に対して安全と見なされます。
+- `someAddress.send()`と`someAddress.transfer()`は[リエントラント（再入可能性）](https://github.com/ConsenSys/smart-contract-best-practices/known_attacks#reentrancy)に対して安全と見なされます。
   これらのメソッドはコードを実行しますが、呼び出されるコントラクトには2,300ガスの義務のみが与えられ、現在はイベントを記録するのに十分です。
   
 - `x.transfer(y)` は `require(x.send(y));`と同じで、送信が失敗すると元の状態に戻ります。
 - `someAddress.call.value(y)()`は、提供されたetherとトリガーコードを送信します。
-  実行されたコードには利用できるすべてのガスが与えられ、リエントラント性に対して安全ではありません。
+  実行されたコードには利用できるすべてのガスが与えられ、リエントラント（再入可能性）に対して安全ではありません。
 
-`send()`や `transfer()`を使うとリエントラントを防ぐことができますが、フォールバック機能が2,300を超えるガスを必要とする契約と互換性がないという犠牲を払って行います。
+`send()`や `transfer()`を使うとリエントラントを防ぐことができますが、フォールバック関数が2,300を超えるガスを必要とするコントラクトと互換性がないという犠牲を払って行います。
 また、`someAddress.call.value(ethAmount).gas(gasAmount)()`を使ってカスタム量のガスを転送することもできます。
 
-このトレードオフのバランスを取る1つのパターンは、両方を実装することです。
-`send()`または `transfer()`を使って、プッシュコンポーネントの場合は `call.value()()`を使用します。
+このトレードオフのバランスをとることを試みる1つのパターンは、[*プッシュ* と *プル*](https://consensys.github.io/smart-contract-best-practices/recommendations/#favor-pull-over-push-for-external-calls)の両方のメカニズムを実装することです。
+*プッシュ*コンポーネントには `send()` または `transfer()` を使用し、*プル*コンポーネントには `call.value()()` を使用します。
 
-valueの送信に `send()`や `transfer() 'を排他的に使用しても、リエントラントに対しては安全ではなく、
+valueの送信に `send()`や `transfer()` を排他的に使用しても、リエントラントに対しては安全ではなく、
 特定のvalueを再入可能で安全にするということだけを指摘しておきましょう。
 
 ### 外部呼び出しのエラー処理
@@ -91,11 +91,11 @@ ExternalContract(someAddress).deposit.value(100);
 ```
 
 
-### 外部呼び出しが失敗した場合のリスクヘッジ
+### 外部呼び出しでは*プッシュ*よりも*プル*型が望ましい 
 
 外部呼び出しが誤ってまたは意図的に失敗する可能性があります。
 このような障害によって引き起こされる被害を最小限に抑えるには、各外部呼び出しを、受信者が開始できる独自のトランザクションに分離する方がよい場合があります。
-これは、特に支払いに関連します。ユーザーが自動的に資金を押し出すのではなく、資金を引き出すことをお勧めします。
+これは、特に支払いに関連します。ユーザーへ自動的に資金を送金（プッシュ）するのではなく、資金を引き出してもらう（プルしてもらう）ことをお勧めします。
 (これにより、[ガスリミット問題](https://github.com/ConsenSys/smart-contract-best-practices/#dos-with-block-gas-limit)の可能性も減ります。)
 単一のトランザクションで複数の`send()`呼び出しを組み合わせることは避けてください。
 
@@ -108,7 +108,7 @@ contract auction {
     function bid() payable {
         require(msg.value >= highestBid);
 
-        if (highestBidder != 0) {
+        if (highestBidder != address(0)) {
             highestBidder.transfer(highestBid); // if this call consistently fails, no one else can bid
         }
 
@@ -126,7 +126,7 @@ contract auction {
     function bid() payable external {
         require(msg.value >= highestBid);
 
-        if (highestBidder != 0) {
+        if (highestBidder != address(0)) {
             refunds[highestBidder] += highestBid; // record the refund that this user can claim
         }
 

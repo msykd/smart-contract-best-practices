@@ -4,14 +4,14 @@
 
 ### <!-- -->
 
-以下の推奨事項は、Ethereum上の契約システムの開発に適用されます。
+以下の推奨事項は、Ethereum上のコントラクトシステムの開発に適用されます。
 
 ## 外部コール
 
 ### 外部コールを行う時は注意する
 
 信頼されていないコントラクトを呼び出すと、いくつかの予期しないリスクやエラーが発生する可能性があります。
-外部呼び出しは、その契約で悪意のあるコードを実行する可能性があります。
+外部呼び出しは、そのコントラクトで悪意のあるコードを実行する可能性があります。
 したがって、すべての外部コールは潜在的なセキュリティリスクとして扱う必要があります。
 外部コールを取り除くことができない、または望ましくない場合は、このセクションの残りのセクションの推奨事項を使用して危険を最小限に抑えてください。
 
@@ -187,7 +187,7 @@ contract Worker
 * 乱数ジェネレータに依存するアプリケーションを開発する場合は、(1)プレイヤーが移動を提出する、(2)乱数が生成される、(3)プレイヤーが支払う順序が常に必要です。乱数が生成される方法自体は、活発な研究の領域です。現在のクラス最高のソリューションには、Bitcoinブロックヘッダー(http://btcrelay.org で検証済み)、ハッシュコミット公開スキーム(すなわち、一方の当事者が数値を生成し、そのハッシュを公開して値にコミットし、 後でその値を明らかにする)と[RANDAO](http://github.com/randao/randao)。
 * 頻繁なバッチオークションを実装する場合、ハッシュコミットスキームも望ましいです。
 
-## 2者契約またはN者契約では、一部の参加者が「オフラインになる」可能性があることに注意する
+## 2者コントラクトまたはN者コントラクトでは、一部の参加者が「オフラインになる」可能性があることに注意する
 
 特定の要求を行っている特定の当事者に応じて払い戻しをしたり、他の方法で資金を引き出すことはできません。 
 例えば、じゃんけんでは、共通の間違いの1つは、両方のプレーヤーが自分の動きを決定するまで支払いを行わないことです。
@@ -232,9 +232,9 @@ contract Negation {
 ## `assert()`で不変量を強制する
 
 アサーションが失敗した場合（不変プロパティの変更など）、アサートガードがトリガーされます。
-例えば、トークン発行契約におけるトークンとetherの発行比率は固定されていてもよい。
+例えば、トークン発行コントラクトにおけるトークンとetherの発行比率は固定されていてもよい。
 これが常に `assert（）`の場合に当てはまることを確認することができます。
-アサートガードは、契約を一時停止し、アップグレードを許可するなど、他の手法と組み合わせることがよくあります。
+アサートガードは、コントラクトを一時停止し、アップグレードを許可するなど、他の手法と組み合わせることがよくあります。
 （でなければあなたはいつも失敗しているアサーションで立ち往生するかもしれません。）
 
 例:
@@ -252,16 +252,49 @@ contract Token {
 }
 ```
 
-アサーションは、契約が `deposit（）`関数を経由せずに強制的にetherを送信することができるので、残高が厳密にイコールではないことに注意してください。
+アサーションは、コントラクトが `deposit（）`関数を経由せずに強制的にetherを送信することができるので、残高が厳密にイコールではないことに注意してください。
 
-## `assert()` と `require()` プロパティを使う (Solidity >= 0.4.10)
+## `assert()` と `require()` プロパティを使う
 
 Solidity 0.4.10から`assert()`と`require()`が導入されました。
 `require（condition）`は入力の検証に使用されることを意味します。
 これはユーザの入力に対して実行する必要があり、条件がfalseの場合に元に戻ります。
-`assert（condition）`は、条件がfalseの場合でも元に戻りますが、内部エラーや契約が無効な状態になったかどうかを確認するためにのみ使用してください。
+`assert（condition）`は、条件がfalseの場合でも元に戻りますが、内部エラーやコントラクトが無効な状態になったかどうかを確認するためにのみ使用してください。
 このパラダイムに従うと、正式な分析ツールは、無効なオペコードに到達することができないことを検証することができます。
 つまり、コード内のインバリアントが違反されていないことと、コードが正式に検証されたことを意味します。
+
+## アサーションにのみ修飾子を使う
+
+修飾子の内側のコードは通常関数本体の前に実行されるので、状態の変化や外部呼び出しは[Checks-Effects-Interactions](https://solidity.readthedocs.io/en/develop/security-considerations.html#use-the-checks-effects-interactions-pattern)パターンに違反します。
+さらに、修飾子のコードは関数宣言からかけ離れているため、これらのステートメントも開発者には気付かれないままになることがあります。
+たとえば、修飾子での外部呼び出しはリエントラント攻撃につながる可能性があります。
+
+```sol
+contract Registry {
+    address owner;
+    
+    function isVoter(address _addr) external returns(bool) {
+        // Code
+    }
+}
+
+contract Election {
+    Registry registry;
+    
+    modifier isEligible(address _addr) {
+        require(registry.isVoter(_addr));
+        _;
+    }
+    
+    function vote() isEligible(msg.sender) public {
+        // Code
+    }
+}
+```
+
+この場合、`Registry`コントラクトは`isVoter()`の中で`Election.vote()`を呼び出すことによってリエントラント攻撃を仕掛けることができます。
+
+修飾子は[エラー処理](https://solidity.readthedocs.io/en/develop/control-structures.html#error-handling-assert-require-revert-and-exceptions)にのみ使用してください。
 
 ## 整数除算での丸めに注意する
 
@@ -298,13 +331,13 @@ uint denominator = 2;
 攻撃者はコントラクトを作成し、1weiで資金を調達し、 `selfdestruct（victimAddress）`を呼び出すことでこれを行うことができます。
 `victimAddress`ではコードが呼び出されないので、防ぐことはできません。
 
-## 抽象的な契約とインタフェースの間のトレードオフに注意してください
+## 抽象的なコントラクトとインタフェースの間のトレードオフに注意してください
 
-インタフェースと抽象契約の両方は、スマートコントラクトのためのカスタマイズ可能で再利用可能なアプローチを提供します。
-Solidity 0.4.11で導入されたインタフェースは、抽象的な契約に似ていますが、実装されている機能を持つことはできません。
+インタフェースと抽象コントラクトの両方は、スマートコントラクトのためのカスタマイズ可能で再利用可能なアプローチを提供します。
+Solidity 0.4.11で導入されたインタフェースは、抽象的なコントラクトに似ていますが、実装されている機能を持つことはできません。
 インタフェースには、ストレージにアクセスできない、または抽象コントラクトをより実用的にする他のインタフェースから継承するなどの制限もあります。
-しかし、インタフェースは実装前に契約を設計する上では確かに有用です。
-さらに、契約が抽象コントラクトから継承する場合は、オーバーライドを使用して実装されていないすべての機能を実装する必要があること、または抽象的であることにも留意することが重要です。
+しかし、インタフェースは実装前にコントラクトを設計する上では確かに有用です。
+さらに、コントラクトが抽象コントラクトから継承する場合は、オーバーライドを使用して実装されていないすべての機能を実装する必要があること、または抽象的であることにも留意することが重要です。
 
 ## fallback関数をシンプルに保つ
 
@@ -320,6 +353,20 @@ function() payable { balances[msg.sender] += msg.value; }
 function deposit() payable external { balances[msg.sender] += msg.value; }
 
 function() payable { LogDepositReceived(msg.sender); }
+```
+
+## fallback関数でデータ長をチェックする
+
+[fallback functions](http://solidity.readthedocs.io/en/latest/contracts.html#fallback-function)はEther転送のために呼び出されるだけでなく、他の関数が一致しないときにも呼び出されます。
+そのため、fallback関数が受信されたEtherのログ記録の目的にのみ使用されることを意図している場合は、データが空であることを確認する必要があります。
+そうでなければ、あなたのコントラクトが誤って使用されていて、存在しない機能が呼び出されても、呼び出し側は気付かないでしょう。
+
+```sol
+// bad
+function() payable { LogDepositReceived(msg.sender); }
+
+// good
+function() payable { require(msg.data.length == 0); LogDepositReceived(msg.sender); }
 ```
 
 ## 関数と状態変数の可視性を明示的にマークする
@@ -355,7 +402,7 @@ function internalAction() internal {
 ## プラグマを特定のコンパイラのバージョンにロックする
 
 コントラクトは、最もよくテストされたものと同じコンパイラ・バージョンとフラグでデプロイする必要があります。
-プラグマをロックすると、未知のバグのリスクが高い最新のコンパイラなどを使用して、契約が誤って展開されないようになります。
+プラグマをロックすると、未知のバグのリスクが高い最新のコンパイラなどを使用して、コントラクトが誤って展開されないようになります。
 コントラクトは他の人によっても展開される可能性があり、プラグマはオリジナルの著者が意図したコンパイラのバージョンを示します。
 
 ```sol
@@ -367,26 +414,64 @@ pragma solidity ^0.4.4;
 pragma solidity 0.4.4;
 ```
 
-Note: a floating pragma version (ie. `^0.4.25`) will compile fine with `0.4.26-nightly.2018.9.25`, however nightly builds should never be used to compile code for production.
+注：フローティングプラグマバージョン（例： `^0.4.25`）は`0.4.26-nightly.2018.9.25`で問題なくコンパイルできますが、本番用のコードをコンパイルするためにnightly buildを使用してはいけません。
 
-### Exception
+### 例外
 
-Pragma statements can be allowed to float when a contract is intended for consumption by other developers, as in the case with contracts in a library or EthPM package. Otherwise, the developer would need to manually update the pragma in order to compile locally.
+ライブラリまたはEthPMパッケージのコントラクトのように、コントラクトが他の開発者による使用を目的としている場合は、プラグマステートメントをフローティングさせることができます。そうでなければ、開発者はローカルにコンパイルするためにプラグマを手動で更新する必要があるでしょう。
 
-## 関数とイベントの命名規則
+## イベントを使用してコントラクトの活動を監視する
 
-関数とイベントの混乱の危険を避けるため、イベント名は大文字で始め、大文字の前に接頭辞を付ける（*Log*を推奨する）。
-関数の場合はコンストラクタを除き、常に小文字で始めます。
+コントラクトのデプロイ後にコントラクトの活動を監視する方法があると便利です。これを実現する1つの方法は、コントラクトのすべてのトランザクションを調べることですが、コントラクト間のメッセージ呼び出しはブロックチェーンに記録されないため、これでは不十分な場合があります。さらに、入力パラメーターのみが表示され、実際の状態の変更は表示されません。
 
 ```sol
-// bad
-event Transfer() {}
-function transfer() {}
+contract Charity {
+    mapping(address => uint) balances;
+    
+    function donate() payable public {
+        balances[msg.sender] += msg.value;
+    }
+}
 
-// good
-event LogTransfer() {}
-function transfer() external {}
+contract Game {
+    function buyCoins() payable public {
+        // 5% goes to charity
+        charity.donate.value(msg.value / 20)();
+    }
+}
 ```
+
+ここでは、`Game`コントラクトは`Charity.donate()`への内部呼び出しを行います。このトランザクションは`Charity`のトランザクション一覧に表示されません。
+たとえ`Game`のトランザクションを見ても、プレイヤーがコインを購入するために費やした金額のみが表示され、`Charity`コントラクトに使用された金額は表示されません。
+
+イベントを介して両方の問題を解決することは可能です。イベントは、コントラクトで発生したことを記録するための便利な方法です。
+発生したイベントは他のコントラクトデータとともにブロックチェーンに残り、将来の監査に使用できます。これは、チャリティの寄付の履歴を提供するためのイベントを使った、上記の例の改良です。
+
+```sol
+contract Charity {
+    // define event
+    event LogDonate(uint _amount);
+    
+    mapping(address => uint) balances;
+    
+    function donate() payable public {
+        balances[msg.sender] += msg.value;
+        // emit event
+        emit LogDonate(msg.value);
+    }
+}
+
+contract Game {
+    function buyCoins() payable public {
+        // 5% goes to charity
+        charity.donate.value(msg.value / 20)();
+    }
+}
+
+```
+
+ここでは、直接またはそうでないかにかかわらず、`Charity`コントラクトを通過するすべての取引が寄付金額とともにそのコントラクトのイベントリストに表示されます。
+
 
 ## より新しいSolidity構造を用いる
 
@@ -395,9 +480,9 @@ function transfer() external {}
 
 ## ビルトインはシャドーイング出来ることに注意する
 
-Solidityの組み込みグローバルを[shadow]（https://en.wikipedia.org/wiki/Variable_shadowing）することは現在可能です。
-これにより、契約は `msg`や` revert（） `などの組み込み関数の機能をオーバーライドすることができます。
-これは意図されていますが（https://github.com/ethereum/solidity/issues/1249）、コントラクトの真の振る舞いに関してユーザーを誤解させる可能性があります。
+Solidityの組み込みグローバルを[シャドーイング](https://en.wikipedia.org/wiki/Variable_shadowing)することは現在可能です。
+これにより、コントラクトは `msg`や` revert() `などの組み込み関数の機能をオーバーライドすることができます。
+これは[意図されてのことですが](https://github.com/ethereum/solidity/issues/1249)、コントラクトの真の振る舞いに関してユーザーを誤解させる可能性があります。
 
 ```sol
 contract PretendingToRevert {
@@ -411,7 +496,7 @@ contract ExampleContract is PretendingToRevert {
 }
 ```
 
-ユーザーは、使用するアプリケーションのコントラクトコードを認識している必要があります。
+コントラクトユーザー（および監査人）は、使用するアプリケーションのスマートコントラクトのソースコード全体を知っておく必要があります。
 
 ## `tx.origin`を使わない
 
@@ -419,9 +504,7 @@ contract ExampleContract is PretendingToRevert {
 あなたのコントラクトにcallする方法（例えば、ユーザーに資金がある場合）と、
 あなたのアドレスが`tx.origin`にあるようにトランザクションを承認する方法があります。
 
-```
-pragma solidity 0.4.18;
-
+```sol
 contract MyContract {
 
     address owner;
@@ -460,10 +543,202 @@ contract AttackingContract {
 詳細はこちら: [Solidity docs](https://solidity.readthedocs.io/en/develop/security-considerations.html#tx-origin)
 
 また、将来 `tx.origin` がEthereumプロトコルから削除される可能性があるので、 `tx.origin`を使用するコードは将来のリリースと互換性がありません。
-[Vitalik：'tx.originは引き続き使用可能または意味のあるものと仮定しないでください。]（https://ethereum.stackexchange.com/questions/196/how-do-i-make-my-dapp-serenity-proof/200＃200）
+[Vitalik：'tx.originは引き続き使用可能または意味のあるものと仮定しないでください。](https://ethereum.stackexchange.com/questions/196/how-do-i-make-my-dapp-serenity-proof/200＃200)
 
 `tx.origin`を使うコントラクトは他のコントラクトで使うことができないので、
 コントラクト間の相互運用性を制限していることにも言及する価値があります。
+
+## タイムスタンプ依存
+
+タイムスタンプを使用してコントラクト内の重要な関数を実行する場合、特にアクションに資金移動が含まれる場合は、3つの主な考慮事項があります。
+
+### タイムスタンプ操作
+
+ブロックのタイムスタンプはマイナーによって操作される可能性があることに注意してください。こちらの[コントラクト](https://etherscan.io/address/0xcac337492149bdb66b088bf5914bedfbf78ccc18#code)を見てみましょう:
+
+```sol
+    
+uint256 constant private salt =  block.timestamp;
+    
+function random(uint Max) constant private returns (uint256 result){
+    //get the best seed for randomness
+    uint256 x = salt * 100/Max;
+    uint256 y = salt * block.number/(salt % 5) ;
+    uint256 seed = block.number/3 + (salt % 300) + Last_Payout + y; 
+    uint256 h = uint256(block.blockhash(seed)); 
+    
+    return uint256((h / x)) % Max + 1; //random number between 1 and Max
+}
+```
+
+コントラクトがタイムスタンプを使用して乱数をシードする場合、マイナーはブロックが検証されてから15秒以内に実際にタイムスタンプをポストできます。これにより、マイナーは宝くじのチャンスに有利なオプションを事前計算することができます。タイムスタンプはランダムではないので、その場合は使用しないでください。
+
+### 15秒ルール
+
+[Yellow Paper](http://yellowpaper.io/) (Ethereum参照仕様)では、時間内にブロックがどれだけ漂う可能性があるかについての制約は規定されていません。
+しかし、Yellow Paperでは各タイムスタンプがその親のタイムスタンプよりも大きくなければならないことを[規定しています](https://ethereum.stackexchange.com/a/5926/46821)。
+一般的なEthereumプロトコルの実装である[Geth](https://github.com/ethereum/go-ethereum/blob/4e474c74dc2ac1d26b339c32064d0bac98775e77/consensus/ethash/consensus.go#L45)と[Parity](https://github.com/paritytech/parity-ethereum/blob/73db5dda8c0109bb6bc1392624875078f973be14/ethcore/src/verification/verification.rs#L296-L307)は、どちらも未来において15秒を超えたのタイムスタンプを持つブロックを拒否します。
+> コントラクト関数がブロックが15秒間漂うことを許容できる場合は、`block.timestamp`を使用するのが安全です。
+
+時間に依存するイベントの規模が15秒変化して整合性を維持できる場合は、タイムスタンプを使用しても安全です。
+
+### タイムスタンプとして`block.number`を使用しない
+
+`block.number`プロパティと[平均ブロック時間](https://etherscan.io/chart/blocktime)を使用して時間差を見積もることは可能ですが、ブロック時間が変わる可能性があるのでこれは将来にわたる証拠とはなりません（[fork reorganisations](https://blog.ethereum.org/2015/08/08/chain-reorganisation-depth-expectations/)や[difficulty bomb](https://github.com/ethereum/EIPs/issues/649)など）。
+販売期間中は、15秒のルールにより、より信頼性の高い時間の見積もりを達成できます。
+
+
+## 多重継承に注意
+
+Solidityで多重継承を利用するときは、コンパイラが継承グラフをどのように構成するかを理解することが重要です。
+
+```sol
+
+contract Final {
+    uint public a;
+    function Final(uint f) public {
+        a = f;
+    }
+}
+
+contract B is Final {
+    int public fee;
+    
+    function B(uint f) Final(f) public {
+    }
+    function setFee() public {
+        fee = 3;
+    }
+}
+
+contract C is Final {
+    int public fee;
+    
+    function C(uint f) Final(f) public {
+    }
+    function setFee() public {
+        fee = 5;
+    }
+}
+
+contract A is B, C {
+  function A() public B(3) C(5) {
+      setFee();
+  }
+}
+```
+コントラクトがデプロイされると、コンパイラは継承を右から左に*線形化*します（_is_ キーワードに続いて、親コントラクトは最も基底となるものから派生されているコントラクトまで、リスト化されます。）。
+これがコントラクトAの線形化です。:
+
+**Final <- B <- C <- A**
+
+Cが最も派生したコントラクトであるため、線形化の結果、`fee` の値は5をもたらします。
+これは明らかに思われるかもしれませんが、Cが重要な関数をシャドーイングし、ブール項を並べ替え、そして開発者に悪用可能なコントラクトを書かせることができてしまうシナリオを想像してください。
+静的解析は現在、シャドーイング関数に関して問題を提起していないので、手動で検査しなければなりません。
+
+セキュリティと継承の詳細については、この[記事](https://pdaian.com/blog/solidity-anti-patterns-fun-with-inheritance-dag-abuse/)をチェックしてください。
+
+コントリビューションの一助となるよう、SolidityのGithubはすべての継承関連の問題を含む[プロジェクト](https://github.com/ethereum/solidity/projects/9#card-8027020) を持っています。
+
+## 型安全のためにアドレスの代わりにインターフェース型を使用する
+
+When a function takes a contract address as an argument, it is better to pass an interface or contract type rather than raw `address`. If the function is called elsewhere within the source code, the compiler it will provide additional type safety guarantees.
+
+Here we see two alternatives: 
+
+```sol
+contract Validator {
+    function validate(uint) external returns(bool);
+}
+
+contract TypeSafeAuction {
+    // good
+    function validateBet(Validator _validator, uint _value) internal returns(bool) {
+        bool valid = _validator.validate(_value);
+        return valid;
+    }
+}
+
+contract TypeUnsafeAuction {
+    // bad
+    function validateBet(address _addr, uint _value) internal returns(bool) {
+        Validator validator = Validator(_addr);
+        bool valid = validator.validate(_value);
+        return valid;
+    }
+}
+```
+
+The benefits of using the `TypeSafeAuction` contract above can then be seen from the following example. If `validateBet()` is called with an `address` argument, or a contract type other than `Validator`, the compiler will throw this error:
+
+```sol
+contract NonValidator{}
+
+contract Auction is TypeSafeAuction {
+    NonValidator nonValidator;
+  
+    function bet(uint _value) {
+        bool valid = validateBet(nonValidator, _value); // TypeError: Invalid type for argument in function call.
+                                                        // Invalid implicit conversion from contract NonValidator 
+                                                        // to contract Validator requested.
+    }
+}
+```
+
+## Avoid using `extcodesize` to check for Externally Owned Accounts
+
+The following modifier (or a similar check) is often used to verify whether a call was made from an externally owned account (EOA) or a contract account:
+
+```sol
+// bad
+modifier isNotContract(address _a) {
+  uint size;
+  assembly {
+    size := extcodesize(_a)
+  }
+    require(size == 0);
+     _;
+}
+```
+
+The idea is straight forward: if an address contains code, it's not an EOA but a contract account. However, a contract does not have source code available during construction. This means that while the constructor is running, it can make calls to other contracts, but `extcodesize` for its address returns zero. Below is a minimal example that shows how this check can be circumvented:
+
+```sol
+contract OnlyForEOA {    
+    uint public flag;
+    
+    // bad
+    modifier isNotContract(address _a){
+        uint len;
+        assembly { len := extcodesize(_a) }
+        require(len == 0);
+        _;
+    }
+    
+    function setFlag(uint i) public isNotContract(msg.sender){
+        flag = i;
+    }
+}
+
+contract FakeEOA {
+    constructor(address _a) public {
+        OnlyForEOA c = OnlyForEOA(_a);
+        c.setFlag(1);
+    }
+}
+```
+
+Because contract addresses can be pre-computed, this check could also fail if it checks an address which is empty at block `n`, but which has a contract deployed to it at some block greater than `n`. 
+
+!!! warning
+
+    This issue is nuanced. 
+
+    If your goal is to prevent other contracts from being able to call your contract, the `extcodesize` check is probably sufficient. An alternative approach is to check the value of `(tx.origin == msg.sender)`, though this also [has drawbacks](recommendations/#avoid-using-txorigin).
+
+    There may be other situations in which the `extcodesize` check serves your purpose. Describing all of them here is out of scope. Understand the underlying behaviors of the EVM and use your Judgement.
+
+    
 
 ## 廃止予定/過去の推奨事項
 
@@ -472,3 +747,19 @@ contract AttackingContract {
 ### ゼロによる除算に注意 (Solidity < 0.4)
 
 バージョン0.4以前のSolidityでは、数値をゼロで割ったときに例外を「throw」しません。 バージョン0.4以上で動作していることを確認してください。
+
+### Differentiate functions and events (Solidity < 0.4.21)
+
+In [v0.4.21](https://github.com/ethereum/solidity/blob/develop/Changelog.md#0421-2018-03-07) Solidity introduced the `emit` keyword to indicate an event `emit EventName();`. As of 0.5.0, it is required. 
+
+Favor capitalization and a prefix in front of events (we suggest *Log*), to prevent the risk of confusion between functions and events. For functions, always start with a lowercase letter, except for the constructor.
+
+```sol
+// bad
+event Transfer() {}
+function transfer() {}
+
+// good
+event LogTransfer() {}
+function transfer() external {}
+```

@@ -37,17 +37,15 @@ function makeUntrustedWithdrawal(uint amount) {
 }
 ```
 
-### 外部コール後に制御フローを仮定しない
+### 外部コール後の状態変化は避ける
 
 *raw calls* (`someAddress.call()`) や *contract calls* (`ExternalContract.someMethod()`)の
-どちらを使用する場合でも、悪質なコードが実行される可能性があるとします。
+どちらを使用する場合でも、悪質なコードが実行される可能性があるとします。外部コントラクトが悪意のあるものではないとしても、それが呼び出すすべてのコントラクトによって悪質なコードが実行される可能性があります。
 
-外部コントラクトが悪意のあるものではないとしても、それが呼び出すすべてのコントラクトによって悪質なコードが実行される可能性があります。
+特に危険なのは、悪意のあるコードが制御フローを乗っ取って再入可能性による脆弱性を引き起こす可能性があることです。(この問題の詳細な議論については、[Reentrancy](https://github.com/ConsenSys/smart-contract-best-practices/known_attacks#reentrancy)を参照してください)
 
-特に危険なのは、悪質なコードが制御フローを乗っ取って競合状態に陥ることです。
-(この問題の詳細な議論については、[Race Conditions](https://github.com/ConsenSys/smart-contract-best-practices/#race-conditions)を参照してください)
+信頼できない外部コントラクトにコールをする場合は、*コール後の状態変化は避けてください*。このパターンは、[checks-effects-interactions pattern](http://solidity.readthedocs.io/en/develop/security-considerations.html?highlight=check%20effects#use-the-checks-effects-interactions-pattern)とも呼ばれます。
 
-あなたが信頼されていない外部コントラクトをコールしているなら、コール後にステートの変更を避けてください。
 
 ### `send()`, `transfer()`, `call.value()()`の間のトレードオフに注意する
 
@@ -314,6 +312,12 @@ pragma solidity ^0.4.4;
 // good
 pragma solidity 0.4.4;
 ```
+
+Note: a floating pragma version (ie. `^0.4.25`) will compile fine with `0.4.26-nightly.2018.9.25`, however nightly builds should never be used to compile code for production.
+
+### Exception
+
+Pragma statements can be allowed to float when a contract is intended for consumption by other developers, as in the case with contracts in a library or EthPM package. Otherwise, the developer would need to manually update the pragma in order to compile locally.
 
 ## 関数とイベントの命名規則
 

@@ -640,11 +640,12 @@ Cが最も派生したコントラクトであるため、線形化の結果、`
 
 コントリビューションの一助となるよう、SolidityのGithubはすべての継承関連の問題を含む[プロジェクト](https://github.com/ethereum/solidity/projects/9#card-8027020) を持っています。
 
-## 型安全のためにアドレスの代わりにインターフェース型を使用する
+## 型安全のためにアドレス型の代わりにインターフェース型を使用する
 
-When a function takes a contract address as an argument, it is better to pass an interface or contract type rather than raw `address`. If the function is called elsewhere within the source code, the compiler it will provide additional type safety guarantees.
+関数が引数としてコントラクトアドレスを取るとき、生の`address`ではなく、インターフェースまたはコントラクトタイプを渡すことをお勧めします。
+この関数がソースコード内の別の場所で呼び出された場合、コンパイラは型の安全性をさらに保証します。
 
-Here we see two alternatives: 
+これには2つの選択肢があります。
 
 ```sol
 contract Validator {
@@ -669,7 +670,8 @@ contract TypeUnsafeAuction {
 }
 ```
 
-The benefits of using the `TypeSafeAuction` contract above can then be seen from the following example. If `validateBet()` is called with an `address` argument, or a contract type other than `Validator`, the compiler will throw this error:
+上記の`TypeSafeAuction`コントラクトを使用する利点は、次の例からわかります。
+`validateBet()`が`address`引数、またはValidator以外のコントラクトタイプで呼び出された場合、コンパイラは次のエラーをスローします。
 
 ```sol
 contract NonValidator{}
@@ -685,9 +687,9 @@ contract Auction is TypeSafeAuction {
 }
 ```
 
-## Avoid using `extcodesize` to check for Externally Owned Accounts
+## 外部所有アカウントの確認に`extcodesize`を使用しない
 
-The following modifier (or a similar check) is often used to verify whether a call was made from an externally owned account (EOA) or a contract account:
+次の修飾子（または同様のチェック）は、関数呼び出しが外部所有アカウント（EOA）または契約アカウントのどちらから行われたのかを確認するためによく使用されます。
 
 ```sol
 // bad
@@ -701,7 +703,8 @@ modifier isNotContract(address _a) {
 }
 ```
 
-The idea is straight forward: if an address contains code, it's not an EOA but a contract account. However, a contract does not have source code available during construction. This means that while the constructor is running, it can make calls to other contracts, but `extcodesize` for its address returns zero. Below is a minimal example that shows how this check can be circumvented:
+考え方は簡単です。アドレスにコードが含まれている場合、それはEOAではなくコントラクトアカウントです。しかし、コントラクトでは構築中に利用可能なソースコードがありません。
+これは、コンストラクタが実行されている間に、他のコントラクトを呼び出すことができますが、そのアドレスに対する`extcodesize`はゼロを返します。以下は、このチェックを回避する方法を示す最小限の例です。
 
 ```sol
 contract OnlyForEOA {    
@@ -728,15 +731,17 @@ contract FakeEOA {
 }
 ```
 
-Because contract addresses can be pre-computed, this check could also fail if it checks an address which is empty at block `n`, but which has a contract deployed to it at some block greater than `n`. 
+コントラクトアドレスは事前計算できるため、ブロック`n`では空であるが、`n`より大きいあるブロックでコントラクトがデプロイされているアドレスをチェックする場合、このチェックも失敗する可能性があります。
 
 !!! warning
 
-    This issue is nuanced. 
+    本項は微妙な問題となっています。
 
-    If your goal is to prevent other contracts from being able to call your contract, the `extcodesize` check is probably sufficient. An alternative approach is to check the value of `(tx.origin == msg.sender)`, though this also [has drawbacks](recommendations/#avoid-using-txorigin).
+    他のコントラクトが自分のコントラクトにコールできないようにすることを目的としている場合は、おそらく`extcodesize`チェックで十分です。
+    別の方法は`(tx.origin == msg.sender)`の値をチェックすることですが、これには[欠点](recommendations/#avoid-using-txorigin)もあります。
 
-    There may be other situations in which the `extcodesize` check serves your purpose. Describing all of them here is out of scope. Understand the underlying behaviors of the EVM and use your Judgement.
+    `extcodesize`チェックがあなたの目的にかなう他の状況があるかもしれません。ここでそれらすべてを記述することは範囲外です。ここでそれらすべてを記述することは範囲外です。
+    EVMの根本的な振る舞いを理解し、ご自身で判断をしてください。
 
     
 
@@ -748,11 +753,11 @@ Because contract addresses can be pre-computed, this check could also fail if it
 
 バージョン0.4以前のSolidityでは、数値をゼロで割ったときに例外を「throw」しません。 バージョン0.4以上で動作していることを確認してください。
 
-### Differentiate functions and events (Solidity < 0.4.21)
+### 関数とイベントを区別する (Solidity < 0.4.21)
 
-In [v0.4.21](https://github.com/ethereum/solidity/blob/develop/Changelog.md#0421-2018-03-07) Solidity introduced the `emit` keyword to indicate an event `emit EventName();`. As of 0.5.0, it is required. 
+[v0.4.21](https://github.com/ethereum/solidity/blob/develop/Changelog.md#0421-2018-03-07) において、Solidityは、`emit`キーワードを導入しました。以後は、`emit EventName();`のようにイベントを明示します。0.5.0以降は必須です。
 
-Favor capitalization and a prefix in front of events (we suggest *Log*), to prevent the risk of confusion between functions and events. For functions, always start with a lowercase letter, except for the constructor.
+関数とイベントの混同のリスクを防ぐために、大文字の使用とイベントの前の接頭辞（*Log*）を推奨します。関数の場合は、コンストラクタを除いて、常に小文字で始めます。
 
 ```sol
 // bad

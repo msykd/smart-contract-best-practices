@@ -248,7 +248,9 @@ uint8、uint16、uint24 ...などの小さなデータ型には注意してく�
 [オーバーフローとアンダーフローが発生するケースは約20件あります。](https://github.com/ethereum/solidity/issues/796#issuecomment-253578925).
 
 ### Underflow in Depth: Storage Manipulation
- [Doug Hoyte's submission](https://github.com/Arachnid/uscc/tree/master/submissions-2017/doughoyte) to the 2017 underhanded solidity contest received [an honorable mention](http://u.solidity.cc/). The entry is interesting, because it raises the concerns about how C-like underflow might affect Solidity storage. Here is a simplified version:
+
+ [Doug Hoyteによる2017年のunderhanded solidity contest（悪意のあるコードを見つけるためのプログラミングコンテスト）への応募](https://github.com/Arachnid/uscc/tree/master/submissions-2017/doughoyte)が、[名誉ある賞を受賞](http://u.solidity.cc/)しました。
+ このエントリは、CのようなアンダーフローがSolidityストレージにどのように影響するかについての懸念を提起するので、興味深いものです。以下に単純化されたバージョンを示します：
 
 ```sol
 contract UnderflowManipulation {
@@ -276,16 +278,17 @@ contract UnderflowManipulation {
     
 }
 ```
- 
-In general, the variable `manipulateMe`'s location cannot be influenced without going through the `keccak256`, which is infeasible. However, since dynamic arrays are stored sequentially, if a malicious actor wanted to change `manipulateMe` all they would need to do is:
- 
- * Call `popBonusCode` to underflow (Note: `array.pop()` method [was added](https://github.com/ethereum/solidity/blob/v0.5.0/Changelog.md) in Solidity 0.5.0)
- * Compute the storage location of `manipulateMe`
- * Modify and update `manipulateMe`'s value using `modifyBonusCode`
 
- In practice, this array would be immediately pointed out as fishy, but buried under more complex smart contract architecture, it can arbitrarily allow malicious changes to constant variables.
+一般的に言って、変数`manipulateMe`の位置は、`keccak256`を通さない限り影響を受けることはできません。影響を及ぼすことは実行不可能です。
+ただし、動的配列は順次格納されるため、悪意のある行為者が`manipulateMe`を変更したい場合は、次のようにします：
+ 
+ * `popBonusCode`をアンダーフローするために呼び出します（注：`array.pop())`メソッドはSolidity 0.5.0で[追加されました](https://github.com/ethereum/solidity/blob/v0.5.0/Changelog.md)）
+ * `manipulateMe`の保管場所を算出します。
+ * `modifyBonusCode`を使用して`manipulateMe`の値を変更および更新する
 
-When considering use of a dynamic array, a container data scructure is a good practice. The Solidity CRUD [part 1](https://medium.com/@robhitchens/solidity-crud-part-1-824ffa69509a) and [part 2](https://medium.com/@robhitchens/solidity-crud-part-2-ed8d8b4f74ec) articles are good resources.
+ 実際には、この配列はすぐに厄介であると指摘されます。しかし、より複雑なスマートコントラクトアーキテクチャの下に埋め込まれていると、定数への悪意のある変更を勝手に許可する可能性があります。
+
+動的配列の使用を検討する際には、コンテナー・データ構造が良い方法です。 Solidity CRUD[part 1](https://medium.com/@robhitchens/solidity-crud-part-1-824ffa69509a)と[part 2](https://medium.com/@robhitchens/solidity-crud-part-2-ed8d8b4f74ec)の記事は良い情報源です。
 
 <a name="dos-with-unexpected-revert"></a>
 

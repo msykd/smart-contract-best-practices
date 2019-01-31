@@ -381,26 +381,29 @@ function payOut() {
 
 ### Gas Limit DoS on the Network via Block Stuffing
 
-Even if your contract does not contain an unbounded loop, an attacker can prevent other transactions from being included in the blockchain for several blocks by placing computationally intensive transactions with a high enough gas price.
+コントラクトに無限のループが含まれていなくても、攻撃者は、十分に高いガス価格を備えた計算集約的トランザクションを配置することによって、他のトランザクションがブロックに取り込ませないようにすることが可能です。
+これを行うために、攻撃者は、ガスリミット全てまでを消費するいくつかのトランザクションを発行することができます。それらのトランザクションは、次のブロックがマイニングされるや否やブロックに取り込まれるほど十分に高いガス価格です。
+ガス価格でブロックに含めることを保証することはできませんが、価格が高いほど、チャンスは高くなります。
 
-To do this, the attacker can issue several transactions which will consume the entire gas limit, with a high enough gas price to be included as soon as the next block is mined. No gas price can guarantee inclusion in the block, but the higher the price is, the higher is the chance.
+攻撃が成功した場合、他のトランザクションはブロックに含まれません。往々にして、攻撃者の目的は、特定の時間まで、特定のコントラクトに対するトランザクションをブロックすることです。
 
-If the attack succeeds, no other transactions will be included in the block. Sometimes, an attacker's goal is to block transactions to a specific contract prior to specific time.
+この攻撃はギャンブルアプリFomo3Dで[行われました](https://osolmaz.com/2018/10/18/anatomy-block-stuffing)。アプリは「キー」を購入した最後のアドレスに報酬を与えるように設計されました。キーを購入するたびにタイマーが延長され、タイマーが0になるとゲームは終了します。
+攻撃者はキーを購入してから、タイマーがトリガーされて支払いが解放されるまで、連続して13ブロックを詰まらせました。
+攻撃者によって送信されたトランザクションは各ブロックで790万のガスを消費したため、ガスリミットによりいくつかの小さな「送信」トランザクション（それぞれ21,000ガスを消費）だけが許可されました。他方、`buyKey()`関数への呼び出しは許可されませんでした（これには300,000以上のガスが必要です）。
 
-This attack [was conducted](https://osolmaz.com/2018/10/18/anatomy-block-stuffing) on Fomo3D, a gambling app. The app was designed to reward the last address that purchased a "key". Each key purchase extended the timer, and the game ended once the timer went to 0. The attacker bought a key and then stuffed 13 blocks in a row until the timer was triggered and the payout was released. Transactions sent by attacker took 7.9 million gas on each block, so the gas limit allowed a few small "send" transactions (which take 21,000 gas each), but disallowed any calls to the `buyKey()` function (which costs 300,000+ gas).
-
-A Block Stuffing attack can be used on any contract requiring an action within a certain time period. However, as with any attack, it is only profitable when the expected reward exceeds its cost. Cost of this attack is directly proportional to the number of blocks which need to be stuffed. If a large payout can be obtained by preventing actions from other participants, your contract will likely be targeted by such an attack. 
+Block Stuffing attackは、一定期間内に対応が必要なあらゆるコントラクトに対して使用できます。ただし、他の攻撃と同様に、予想される報酬（見返り）がその攻撃コストを超える場合にのみ有益です。
+この攻撃のコストは、詰まらせる必要があるブロックの数に正比例します。他の参加者からの行動を防ぐことによって大きな支払いが得られる場合、あなたのコントラクトはそのような攻撃の標的になるでしょう。
 
 ## Insufficient gas griefing
 
-This attack may be possible on a contract which accepts generic data and uses it to make a call another contract (a 'sub-call') via the low level `address.call()` function, as is often the case with multisignature and transaction relayer contracts.
+この攻撃は、汎用データを受け入れ、それを使って低レベルの`address.call()`関数を介して他のコントラクトを呼び出す（「サブコール」する）際に発生する可能性があります。マルチシグおよびトランザクションリレーのコントラクトではよくあることです。
 
-If the call fails, the contract has two options:
+関数コールが失敗した場合、コントラクトには2つの選択肢があります。
 
-1. revert the whole transaction
-2. continue execution.
+1. トランザクション全体を元に戻す
+2. 実行を続ける
 
-Take the following example of a simplified `Relayer` contract which continues execution regardless of the outcome of the subcall:
+サブコールの結果に関係なく実行を継続する単純化した`Relayer`コントラクトの例を取ります。
 
 ```sol
 contract Relayer {
@@ -415,15 +418,18 @@ contract Relayer {
 }
 ```
 
-This contract allows transaction relaying. Someone who wants to make a transaction but can't execute it by himself (e.g. due to the lack of ether to pay for gas) can sign data that he wants to pass and transfer the data with his signature over any medium. A third party "forwarder" can then submit this transaction to the network on behalf of the user.
+このコントラクトはトランザクションの中継を許可します。トランザクションを発行したいが自分でそれを実行することができない人（例：ガス代のEtherがないため）は、その人が渡したいデータに署名し、任意の媒体を介して自分の署名でデータを転送できます。
+その後、第三者の「フォワーダー（forwarder）」がユーザに代わってこのトランザクションをネットワークに送信できます。
 
-If given just the right amount of gas, the `Relayer` would complete execution recording the `_data`argument in the `executed` mapping, but the subcall would fail because it received insufficient gas to complete execution.
+適切な量​​のガスが与えられた場合、`Relayer`は実行されたマッピングの_data引数を記録して実行を完了しますが、サブコールは実行を完了するのに不十分なガスを受け取ったため失敗します。
 
-Note: When a contract makes a sub-call to another contract, the EVM limits the gas forwarded to [to 63/64 of the remaining gas](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-150.md), 
+注：あるコントラクトが別のコントラクトにサブコールをおこなうと、EVMは転送されるガスを[残りのガスの63/64](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-150.md)に制限します。
 
-An attacker can use this to censor transactions, causing them to fail by sending them with a low amount of gas. This attack is a form of "[griefing](https://en.wikipedia.org/wiki/Griefer)": It doesn't directly benefit the attacker, but causes grief for the victim. A dedicated attacker, willing to consistently spend a small amount of gas could theoretically censor all transactions this way, if they were the first to submit them to `Relayer`.
+攻撃者はこれを使用してトランザクションを検閲し、少量のガスを使用して送信することでトランザクションを失敗させることができます。この攻撃は「[グリーフィング（griefing）](https://en.wikipedia.org/wiki/Griefer)」の一形態です。
+それは直接攻撃者に利益をもたらすわけではありませんが、被害者に不利益をもたらします。
 
-One way to address this is to implement logic requiring forwarders to provide enough gas to finish the subcall. If the miner tried to conduct the attack in this scenario, the `require` statement would fail and the inner call would revert. A user can specify a minimum gasLimit along with the other data (in this example, typically the `_gasLimit` value would be verified by a signature, but that is ommitted for simplicity in this case).
+これに対処する1つの方法は、フォワーダがサブコールを終了するのに十分なガスを提供することを要求するロジックを実装することです。マイナーがこのシナリオで攻撃を行おうとした場合、`require`ステートメントで失敗し、内部呼び出しは元に戻ります。
+ユーザーは他のデータと共に最小gasLimitを指定できます（この例では、通常`_gasLimit`値は署名によって検証されますが、この場合は簡略化のため省略されています。）。
 
 ```sol
 // contract called by Relayer
@@ -435,7 +441,7 @@ contract Executor {
 }
 ```
 
-Another solution is to permit only trusted accounts to mine the transaction. 
+もう1つの解決策は、信頼できるアカウントだけにトランザクションの中継を許可することです。
 
 
 ## Forcibly Sending Ether to a Contract
@@ -481,4 +487,5 @@ contract Vulnerable {
 
 ## Other Vulnerabilities
 
-The [Smart Contract Weakness Classification Registry](https://smartcontractsecurity.github.io/SWC-registry/) offers a complete and up-to-date catalogue of known smart contract vulnerabilities and anti-patterns along with real-world examples. Browsing the registry is a good way of keeping up-to-date with the latest attacks.
+[Smart Contract Weakness Classification Registry](https://smartcontractsecurity.github.io/SWC-registry/)は、既知のスマートコントラクトの脆弱性とアンチパターンに関する完全で最新の一覧として、実例とともに提供されています。
+レジストリを参照することは、最新の攻撃情報に触れることができ、情報をアップデートし続ける良い方法です。

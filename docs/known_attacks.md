@@ -485,6 +485,14 @@ contract Vulnerable {
 <sup><a href='http://ethereum.stackexchange.com/questions/9398/how-does-eip-150-change-the-call-depth-attack'>\*</a></sup>
 (すべてのガスは1024の深さ制限に達する前に十分消費されるでしょう)
 
+### Constantinople Reentrancy Attack
+
+2019年1月16日、Constantinopleプロトコルのアップグレードは[EIP 1283](https://eips.ethereum.org/EIPS/eip-1283)によって可能にされたセキュリティ脆弱性のために延期されました。
+EIP 1283において、ダーティーマップを使用しないSSTOREの純粋なガス計測では、ダーティーストレージ書き込み時の過剰なガスコストを削減するための変更が提案されています。
+
+この変更により、特定の状況で以前から知られていた安全なwithdrawパターン（`.send()`および`.transfer()`）を安全でないものにする新たな再入可能性の可能性が生まれました<sup><a href='https://medium.com/chainsecurity/constantinople-enables-new-reentrancy-attack-ace4088297d9'>\*</a></sup>。
+攻撃者は制御フローを乗っ取ってEIP 1283によって有効にされている残りのガスを使用する可能性があり、再入可能性による脆弱性をもたらす可能性があります。
+
 ## Other Vulnerabilities
 
 [Smart Contract Weakness Classification Registry](https://smartcontractsecurity.github.io/SWC-registry/)は、既知のスマートコントラクトの脆弱性とアンチパターンに関する完全で最新の一覧として、実例とともに提供されています。

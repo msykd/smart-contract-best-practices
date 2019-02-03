@@ -6,3 +6,6 @@
 
 # build directory
 /site
+
+# JetBrains IDE
+/.idea

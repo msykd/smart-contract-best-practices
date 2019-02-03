@@ -1,7 +1,7 @@
-A lot of this document contains code, examples and insights gained from various parts already written by the community.
-Here are some of them.  Feel free to add more.
+本ドキュメントの多くは、コミュニティによってすでに発表された様々な知見から得られたコード、事例、見識を含んでいます。
+それらのいくつかをここに紹介します。他に紹介すべきものがあれば、気軽に追加してください。
 
-##### By Ethereum core developers
+##### Ethereumのコアデベロッパーが提供するドキュメント
 
 - [How to Write Safe Smart Contracts](https://chriseth.github.io/notes/talks/safe_solidity) (Christian Reitwiessner)
 - [Smart Contract Security](https://blog.ethereum.org/2016/06/10/smart-contract-security/) (Christian Reitwiessner)
@@ -9,8 +9,9 @@ Here are some of them.  Feel free to add more.
 - [Solidity](http://solidity.readthedocs.io)
 - [Solidity Security Considerations](http://solidity.readthedocs.io/en/latest/security-considerations.html)
 
-##### By Community
+##### コミュニティが提供するドキュメント
 
+- https://blog.sigmaprime.io/solidity-security.html
 - http://forum.ethereum.org/discussion/1317/reentrant-contracts
 - http://hackingdistributed.com/2016/06/16/scanning-live-ethereum-contracts-for-bugs/
 - http://hackingdistributed.com/2016/06/18/analysis-of-the-dao-exploit/
@@ -26,6 +27,7 @@ Here are some of them.  Feel free to add more.
 - https://eprint.iacr.org/2016/1007.pdf
 - https://github.com/Bunjin/Rouleth/blob/master/Security.md
 - https://github.com/LeastAuthority/ethereum-analyses
+- https://github.com/bokkypoobah/ParityMultisigRecoveryReconciliation
 - https://medium.com/@ConsenSys/assert-guards-towards-automated-code-bounties-safe-smart-contract-coding-on-ethereum-8e74364b795c
 - https://medium.com/@coriacetic/in-bits-we-trust-4e464b418f0b
 - https://medium.com/@hrishiolickel/why-smart-contracts-fail-undiscovered-bugs-and-what-we-can-do-about-them-119aa2843007

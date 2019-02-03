@@ -84,7 +84,7 @@ someAddress.call.value(100)(bytes4(sha3("deposit()"))); // if deposit throws an 
 
 // good
 if(!someAddress.send(55)) {
-    // Some failure code
+    // handle failure code
 }
 
 ExternalContract(someAddress).deposit.value(100);
@@ -166,26 +166,23 @@ contract Worker
 }
 ```
 
-デプロイされた`Destructor`コントラクトのアドレスを引数として`Worker.doWork()`が呼び出されると、Workerコントラクトはself-destructします。実行を信頼できるコントラクトにのみ委任し、ユーザーが指定したアドレスには委任しないでください。
+デプロイされた`Destructor`コントラクトのアドレスを引数として`Worker.doWork()`が呼び出されると、Workerコントラクトはself-destructします。実行を信頼できるコントラクトにのみ委任し、**ユーザーが指定したアドレスには委任しないでください**。
 
-## 新たにデプロイされたコントラクトの残高が0と決めつけない
-
-デプロイ前にコントラクトアドレスに対してweiを送信できます。
-コントラクトは初期状態に残高0が含まれていると想定すべきではありません。
-詳細は[issue 61](https://github.com/ConsenSys/smart-contract-best-practices/issues/61)を参照してください。
-
+!!! Warning
+      Don't assume contracts are created with zero balance
+      An attacker can send ether to the address of a contract before it is created.  Contracts should not assume that its initial state contains a zero balance.  See [issue 61](https://github.com/ConsenSys/smart-contract-best-practices/issues/61) for more details.
+  
 ## オンチェーンのデータは公開されていることを忘れない
 
-多くのアプリケーションでは、データをある時点まで非公開にする必要があります。
-ゲーム(例えば、チェーン上の岩石 - はさみ)とオークションメカニズム(例えば、入札価格の第二価格オークション)は、2つの主要なカテゴリの例です。
+多くのアプリケーションでは、データをある時点まで非公開にする必要があります。ゲーム(例えば、オンチェーン上のじゃんけん)とオークション(例えば、2位価格封印入札[Vickrey auctions](https://en.wikipedia.org/wiki/Vickrey_auction)は、2つの主要なカテゴリの例です。
 プライバシーが問題となるアプリケーションを構築する場合は、ユーザーに情報を早期に公開しないように注意してください。
+最良の戦略は、別々のフェーズで[コミットメントスキーム](https://en.wikipedia.org/wiki/Commitment_scheme)を使用することです。最初に値のハッシュを使用してコミットし、後の段階で値を表示します。
 
 例:
 
 * じゃんけんでは、両方のプレイヤーに、最初に意図した移動のハッシュを提出する必要があります。送信された移動がハッシュと一致しない場合、例外をthrowします。
 * オークションでは、プレイヤーに初期段階で入札額のハッシュ値を提示し(入札額を超える入金額とともに)、第2段階でアクション入札額を提示する必要があります。
-* 乱数ジェネレータに依存するアプリケーションを開発する場合は、(1)プレイヤーが移動を提出する、(2)乱数が生成される、(3)プレイヤーが支払う順序が常に必要です。乱数が生成される方法自体は、活発な研究の領域です。現在のクラス最高のソリューションには、Bitcoinブロックヘッダー(http://btcrelay.org で検証済み)、ハッシュコミット公開スキーム(すなわち、一方の当事者が数値を生成し、そのハッシュを公開して値にコミットし、 後でその値を明らかにする)と[RANDAO](http://github.com/randao/randao)。
-* 頻繁なバッチオークションを実装する場合、ハッシュコミットスキームも望ましいです。
+* 乱数ジェネレータに依存するアプリケーションを開発する場合は、(1)プレイヤーが移動を提出する、(2)乱数が生成される、(3)プレイヤーが支払う順序が常に必要です。乱数が生成される方法自体は、活発な研究の領域です。現在のクラス最高のソリューションには、Bitcoinブロックヘッダー(http://btcrelay.org で検証済み)、ハッシュコミット公開スキーム(すなわち、一方の当事者が数値を生成し、そのハッシュを公開して値にコミットし、 後でその値を明らかにする)と[RANDAO](http://github.com/randao/randao)。Ethereumは確定的プロトコルであるため、プロトコル内の変数を予測不可能な乱数として使用することはできません。マイナーはある程度`block.blockhash()`値を管理していることにも注意してください<sup><a href='https://ethereum.stackexchange.com/questions/419/when-can-blockhash-be-safely-used-for-a-random-number-when-would-it-be-unsafe'>\*</a></sup>。
 
 ## 2者コントラクトまたはN者コントラクトでは、一部の参加者が「オフラインになる」可能性があることに注意する
 
@@ -254,14 +251,34 @@ contract Token {
 
 アサーションは、コントラクトが `deposit（）`関数を経由せずに強制的にetherを送信することができるので、残高が厳密にイコールではないことに注意してください。
 
-## `assert()` と `require()` プロパティを使う
+## `assert()`, `require()`, `revert()` を適切に使う
 
 Solidity 0.4.10から`assert()`と`require()`が導入されました。
-`require（condition）`は入力の検証に使用されることを意味します。
-これはユーザの入力に対して実行する必要があり、条件がfalseの場合に元に戻ります。
-`assert（condition）`は、条件がfalseの場合でも元に戻りますが、内部エラーやコントラクトが無効な状態になったかどうかを確認するためにのみ使用してください。
-このパラダイムに従うと、正式な分析ツールは、無効なオペコードに到達することができないことを検証することができます。
-つまり、コード内のインバリアントが違反されていないことと、コードが正式に検証されたことを意味します。
+
+> 便利な関数**assert**および**require**は、条件をチェックし、条件が満たされない場合は例外をスローするために使用できます。
+
+> **assert**関数は、内部エラーをテストし、インバリアントをチェックするためにのみ使用されるべきです。
+
+> **require**関数は有効な条件を保証するために使われるべきです。たとえば、入力値、あるいはコントラクトの状態変数の条件が合致している、または外部コントラクトへの呼び出しからの戻り値を検証するなどです。<sup><a href='https://solidity.readthedocs.io/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions'>\*</a></sup>
+
+このパラダイムに従うことで、正式な分析ツールは無効なオペコードに決して到達できないことを検証することができます。つまり、コード内のインバリアントに違反していないこと、およびコードが正式に検証されていることを意味します。
+
+```sol
+pragma solidity ^0.5.0;
+
+contract Sharer {
+    function sendHalf(address payable addr) public payable returns (uint balance) {
+        require(msg.value % 2 == 0, "Even value required."); //Require() can have an optional message string
+        uint balanceBeforeTransfer = address(this).balance;
+        addr.transfer(msg.value / 2);
+        // Since transfer throws an exception on failure and
+        // cannot call back here, there should be no way for us to
+        // still have half of the money.
+        assert(address(this).balance == balanceBeforeTransfer - msg.value / 2); // used for internal error checking
+        return address(this).balance;
+    }
+}
+```
 
 ## アサーションにのみ修飾子を使う
 
@@ -369,6 +386,18 @@ function() payable { LogDepositReceived(msg.sender); }
 function() payable { require(msg.data.length == 0); LogDepositReceived(msg.sender); }
 ```
 
+## payable関数と状態変数を明示的にマークする
+Solidity `0.4.0`からは、etherを受け取っているすべての関数は`payable`修飾子を使わなければなりません。そうでなければ、トランザクションが`msg.value> 0`の場合は（[こちらの例の場合を除いて](./recommendations/#ether)）リバートされます。
+
+Declare variables and especially function arguments as `address payable`, if you want to call `transfer` on them. You can use `.transfer(..)` and `.send(..)` on `address payable`, but not on `address`. You can use a low-level `.call(..)` on both `address` and `address payable`, even if you attach value to it. This is not recommended.<sup><a href='https://ethereum.stackexchange.com/questions/64108/whats-the-difference-between-address-and-address-payable'>\*</a></sup>
+
+!!! Note
+
+    ひょっとしたら明白ではないこととして下記のことがあります。`payable`修飾子は、*external* なコントラクトからの呼び出しにのみ適用されます。同じコントラクトの中でpayable関数の中で非payable関数をコールした場合、msg.valueは設定されていますが、非payable関数は失敗しません。
+
+
+
+
 ## 関数と状態変数の可視性を明示的にマークする
 
 関数と状態変数の可視性を明示的にラベル付けする。
@@ -376,6 +405,12 @@ function() payable { require(msg.data.length == 0); LogDepositReceived(msg.sende
 それらの違いを理解してください。たとえば、 `public`ではなく` external`で十分でしょう。
 状態変数については、「外部」は不可能である。
 可視性を明示的にラベルすると、関数を呼び出すことができるか、変数にアクセスできるかについての間違った前提を簡単にキャッチできます。
+
+* `External` 関数はコントラクトインタフェースの一部です。External関数`f`を内部的に呼び出すことはできません（つまり、`f()`は機能しませんが、`this.f()` は機能します）。大量のデータを受け取る場合、External関数はより効率的な場合があります。
+* `Public` 関数はコントラクトインタフェースの一部であり、内部的にまたはメッセージを介して呼び出すことができます。パブリック状態変数の場合、自動的にgetter関数（下記参照）が生成されます。
+* `Internal` 関数と状態変数は、`this`を使用せずに内部のみにアクセスできます。
+* `Private` 関数と状態変数は、それらが定義されているコントラクトから参照できますが、派生されたコントラクトからは参照できません。**注**:プライベート変数を含めてコントラクト内にあるものはすべて、ブロックチェーンの外部のすべての閲覧者が見ることができます。<sup><a href='https://solidity.readthedocs.io/en/develop/contracts.html?#visibility-and-getters'>\*</a></sup>
+
 
 ```sol
 // bad
@@ -387,7 +422,7 @@ function buy() { // the default is public
 // good
 uint private y;
 function buy() external {
-    // only callable externally
+    // only callable externally or using this.buy()
 }
 
 function utility() public {
@@ -422,7 +457,7 @@ pragma solidity 0.4.4;
 
 ## イベントを使用してコントラクトの活動を監視する
 
-コントラクトのデプロイ後にコントラクトの活動を監視する方法があると便利です。これを実現する1つの方法は、コントラクトのすべてのトランザクションを調べることですが、コントラクト間のメッセージ呼び出しはブロックチェーンに記録されないため、これでは不十分な場合があります。さらに、入力パラメーターのみが表示され、実際の状態の変更は表示されません。
+コントラクトのデプロイ後にコントラクトの活動を監視する方法があると便利です。これを実現する1つの方法は、コントラクトのすべてのトランザクションを調べることですが、コントラクト間のメッセージ呼び出しはブロックチェーンに記録されないため、これでは不十分な場合があります。さらに、入力パラメーターのみが表示され、実際の状態の変更は表示されません。また、イベントを使用してユーザーインターフェイスの関数を起動することもできます。
 
 ```sol
 contract Charity {
@@ -441,11 +476,10 @@ contract Game {
 }
 ```
 
-ここでは、`Game`コントラクトは`Charity.donate()`への内部呼び出しを行います。このトランザクションは`Charity`のトランザクション一覧に表示されません。
+ここでは、`Game`コントラクトは`Charity.donate()`への内部呼び出しを行います。このトランザクションは`Charity`の外部トランザクションリストには表示されず、内部トランザクションにのみ表示されます。
 たとえ`Game`のトランザクションを見ても、プレイヤーがコインを購入するために費やした金額のみが表示され、`Charity`コントラクトに使用された金額は表示されません。
 
-イベントを介して両方の問題を解決することは可能です。イベントは、コントラクトで発生したことを記録するための便利な方法です。
-発生したイベントは他のコントラクトデータとともにブロックチェーンに残り、将来の監査に使用できます。これは、チャリティの寄付の履歴を提供するためのイベントを使った、上記の例の改良です。
+イベントは、コントラクトで発生したことを記録するための便利な方法です。発生したイベントは他のコントラクトデータとともにブロックチェーンに残り、将来の監査に使用できます。これは、チャリティの寄付の履歴を提供するためのイベントを使った、上記の例の改良です。
 
 ```sol
 contract Charity {
@@ -477,6 +511,7 @@ contract Game {
 
 `selfdestruct`（` suicide`）と `keccak256`（` sha3`以上）のような構造体/エイリアスが好ましいです。
 `require（msg.sender.send（1 ether））`のようなパターンは `msg.sender.transfer（1 ether）`のように `transfer（）`を使って単純化することもできます。
+同様の変更については[Solidity Change log](https://github.com/ethereum/solidity/blob/develop/Changelog.md)を調べてください。
 
 ## ビルトインはシャドーイング出来ることに注意する
 
@@ -703,7 +738,7 @@ modifier isNotContract(address _a) {
 }
 ```
 
-考え方は簡単です。アドレスにコードが含まれている場合、それはEOAではなくコントラクトアカウントです。しかし、コントラクトでは構築中に利用可能なソースコードがありません。
+考え方は簡単です。アドレスにコードが含まれている場合、それはEOAではなくコントラクトアカウントです。しかし、**コントラクトは自身を構築中に利用可能なソースコードはありません**。
 これは、コンストラクタが実行されている間に、他のコントラクトを呼び出すことができますが、そのアドレスに対する`extcodesize`はゼロを返します。以下は、このチェックを回避する方法を示す最小限の例です。
 
 ```sol

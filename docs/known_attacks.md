@@ -73,7 +73,7 @@ function withdrawBalance() public {
 
 ### Pitfalls in Reentrancy Solutions
 
-再入可能性は複数の関数、さらには複数のコントラクトにまたがって発生する可能性があるため、単一の関数で再入可能性を防ぐことを目的とした解決策では不十分です。
+Reentrancy（再入可能性）は複数の関数、さらには複数のコントラクトにまたがって発生する可能性があるため、単一の関数で再入可能性を防ぐことを目的とした解決策では不十分です。
 
 そうではなく、最初にすべての内部作業（つまり、状態の変更）を終了してから、外部関数を呼び出すことを推奨します。
 この規則を慎重に守れば、再入可能性による脆弱性を避けることができます。
@@ -124,7 +124,7 @@ function untrustedGetFirstWithdrawalBonus(address recipient) public {
 }
 ```
 
-再入が不可能であることに加えて、[信頼できない関数がマークされてます。](https://github.com/ConsenSys/smart-contract-best-practices#mark-untrusted-contracts)
+再入が不可能であることに加えて、[信頼できない関数がマークされてます。](./recommendations#_5)
 この同じパターンは、すべてのレベルで繰り返されます。
 `untrustedGetFirstWithdrawalBonus()`は外部コントラクトを呼び出す `untrustedWithdrawReward()`を呼び出すので、
 `untrustedGetFirstWithdrawalBonus()`も安全でないものとして扱わなければなりません。
@@ -234,7 +234,7 @@ function transfer(address _to, uint256 _value) {
 }
 ```
 
-バランスが最大uint値（2 ^ 256）に達すると、ゼロに戻ります。これにより、その状態がチェックされます。
+残高が最大uint値（2 ^ 256）に達すると、ゼロに戻ります。これにより、その状態がチェックされます。
 これは、実装に応じて適切かどうかは関係ありません。
 uint値にこのような大きな値に近づく機会があるかどうかについて考えてみましょう。
 uint変数がどのように状態を変え、そのような変更を行う権限を持っているかについて考えます。
@@ -288,7 +288,7 @@ contract UnderflowManipulation {
 
  実際には、この配列はすぐに厄介であると指摘されます。しかし、より複雑なスマートコントラクトアーキテクチャの下に埋め込まれていると、定数への悪意のある変更を勝手に許可する可能性があります。
 
-動的配列の使用を検討する際には、コンテナー・データ構造が良い方法です。 Solidity CRUD[part 1](https://medium.com/@robhitchens/solidity-crud-part-1-824ffa69509a)と[part 2](https://medium.com/@robhitchens/solidity-crud-part-2-ed8d8b4f74ec)の記事は良い情報源です。
+動的配列の使用を検討する際には、コンテナー・データ構造が良い方法です。 Solidity CRUD [part 1](https://medium.com/@robhitchens/solidity-crud-part-1-824ffa69509a)と[part 2](https://medium.com/@robhitchens/solidity-crud-part-2-ed8d8b4f74ec)の記事は良い情報源です。
 
 <a name="dos-with-unexpected-revert"></a>
 
@@ -316,7 +316,7 @@ contract Auction {
 古いリーダーを払い戻そうとすると、払い戻しが失敗した場合に元のリーダーに戻ります。
 これは、悪意のある入札者が、そのアドレスへの払い戻しが常に失敗することを確実にしながら、リーダーになれることを意味します。
 このようにして、他の誰かが `bid()`関数を呼び出すのを防ぐことができ、リーダーを永遠にとどめることができます。
-前に説明したように、[プル型の支払い](./recommendations#_8)を代わりに設定することをお勧めします。
+前に説明したように、[pull型の支払い](./recommendations#push-pull)を代わりに設定することをお勧めします。
 
 もう1つの例は、コントラクトによってユーザー(例えば、クラウドファンディングコントラクトの支援者)に支払うために配列を反復する場合です。
 それぞれの支払いが成功することを確認することが一般的です。
@@ -335,7 +335,7 @@ function refundAll() public {
 }
 ```
 
-ここでも推奨の解決策は [プッシュ型よりもプル型が望ましい](./recommendations#_8)ことになります。
+ここでも推奨の解決策は [push型よりもpull型が望ましい](./recommendations#push-pull)ことになります。
 
 ## DoS with Block Gas Limit
 
@@ -351,7 +351,7 @@ function refundAll() public {
 前の例の場合、攻撃者はアドレスの束を追加することができ、それぞれは非常に小さな払い戻しを必要とします。
 したがって、各攻撃者のアドレスを払い戻すためのガスコストは、ガス制限を超えてしまい、払い戻し取引がまったく起こらないようになる可能性があります。
 
-これが[プッシュ型よりもプル型が望ましい](./recommendations#_8)ことのもうひとつの理由です。
+これが[push型よりもpull型が望ましい](./recommendations#push-pull)ことのもうひとつの理由です。
 
 未知のサイズの配列を絶対にループする必要がある場合は、複数のブロックを取る可能性があるため、複数のトランザクションが必要になる可能性があります。
 次の例のように、あなたがどれぐらい離れているかを追跡し、その時点から再開できるようにする必要があります。
@@ -446,8 +446,8 @@ contract Executor {
 
 ## Forcibly Sending Ether to a Contract
 
-Etherをコントラクトに強制的に送信することは、フォールバック機能をトリガーすることなく可能です。
-これは、フォールバック機能に重要なロジックを配置したり、コントラクトの残高に基づいて計算を行う際に重要な考慮事項です。
+Etherをコントラクトに強制的に送信することは、fallback関数をトリガーすることなく可能です。
+これは、fallback関数に重要なロジックを配置したり、コントラクトの残高に基づいて計算を行う際に重要な考慮事項です。
 次の例を考えてみましょう。
 
 ```sol
@@ -464,26 +464,25 @@ contract Vulnerable {
 ```
 
 このロジックはコントラクトへの支払いを拒否し、何か悪いことが起こらないようにしているようです。
-しかしながら、Etherを強制的にコントラクトに送り、それゆえ、そのバランスをゼロより大きくするためのいくつかの方法が存在します。
+しかしながら、Etherを強制的にコントラクトに送り、それゆえ、その残高をゼロより大きくするためのいくつかの方法が存在します。
 
-`selfdestruct`メソッドは、ユーザーが余分なEtherを送信する受益者を指定することを可能にします。(
-[does not trigger a contract's fallback function](https://solidity.readthedocs.io/en/develop/security-considerations.html#sending-and-receiving-ether))
+`selfdestruct`コントラクトメソッドでは、ユーザーは受取人を指定して余分なEtherを送ることができます。
+`selfdestruct`は[コントラクトのfallback関数を起動させません](https://solidity.readthedocs.io/en/develop/security-considerations.html#sending-and-receiving-ether)。
 
-展開する前に、コントラクトのアドレスを[precompute](https://github.com/Arachnid/uscc/tree/master/submissions-2017/ricmoo)に送信し、
-そのアドレスにEtherを送信することもできます。
+コントラクトをデプロイする前に、コントラクトアドレスを[事前計算](https://github.com/Arachnid/uscc/tree/master/submissions-2017/ricmoo)し、そのアドレスにEtherを送信することもできます。
 
 コントラクトエンジニアは、Etherを強制的に送ることができることに注意し、それに応じてロジックを設計する必要があります。
-一般的に、資金調達源をコントラクトに制限することはできないと仮定します。
+一般に、資金源をあなたのコントラクトに制限することは不可能であると想定してください。
 
 ## Deprecated/historical attacks
 
-これは、プロトコルの変更や強固性の向上により、もはや不可能な攻撃です。 後世のためにここに記録されています。
+これは、プロトコルの変更やSolidityの改善により、もはや不可能な攻撃です。後世のためにここに記録されています。
 
 ### Call Depth Attack (deprecated)
 
-[EIP 150](https://github.com/ethereum/EIPs/issues/150)ハードフォークの時点では、Call Depth攻撃はもはや意味がありません。
+[EIP 150](https://github.com/ethereum/EIPs/issues/150)ハードフォークの時点では、Call Depth攻撃はもはや意味がありません
 <sup><a href='http://ethereum.stackexchange.com/questions/9398/how-does-eip-150-change-the-call-depth-attack'>\*</a></sup>
-(すべてのガスは1024の深さ制限に達する前に十分消費されるでしょう)
+(すべてのガスは1024の深さ制限に達する前に十分消費されるでしょう)。
 
 ### Constantinople Reentrancy Attack
 

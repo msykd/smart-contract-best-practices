@@ -42,7 +42,7 @@ function makeUntrustedWithdrawal(uint amount) {
 *raw calls* (`someAddress.call()`) や *contract calls* (`ExternalContract.someMethod()`)の
 どちらを使用する場合でも、悪質なコードが実行される可能性があるとします。外部コントラクトが悪意のあるものではないとしても、それが呼び出すすべてのコントラクトによって悪質なコードが実行される可能性があります。
 
-特に危険なのは、悪意のあるコードが制御フローを乗っ取ってリエントラント（再入可能性）による脆弱性を引き起こす可能性があることです。(この問題の詳細な議論については、[Reentrancy](https://github.com/ConsenSys/smart-contract-best-practices/known_attacks#reentrancy)を参照してください)
+特に危険なのは、悪意のあるコードが制御フローを乗っ取ってリエントラント（再入可能性）による脆弱性を引き起こす可能性があることです。(この問題の詳細な議論については、[Reentrancy](./known_attacks#reentrancy)を参照してください)
 
 信頼できない外部コントラクトにコールをする場合は、*コール後の状態変化は避けてください*。このパターンは、[checks-effects-interactions pattern](http://solidity.readthedocs.io/en/develop/security-considerations.html?highlight=check%20effects#use-the-checks-effects-interactions-pattern)とも呼ばれます。
 
@@ -62,8 +62,8 @@ etherを送信する方法として
 `send()`や `transfer()`を使うとリエントラントを防ぐことができますが、フォールバック関数が2,300を超えるガスを必要とするコントラクトと互換性がないという犠牲を払って行います。
 また、`someAddress.call.value(ethAmount).gas(gasAmount)()`を使ってカスタム量のガスを転送することもできます。
 
-このトレードオフのバランスをとることを試みる1つのパターンは、[*プッシュ* と *プル*](https://consensys.github.io/smart-contract-best-practices/recommendations/#favor-pull-over-push-for-external-calls)の両方のメカニズムを実装することです。
-*プッシュ*コンポーネントには `send()` または `transfer()` を使用し、*プル*コンポーネントには `call.value()()` を使用します。
+このトレードオフのバランスをとることを試みる1つのパターンは、[*push* と *pull*](#_8)の両方のメカニズムを実装することです。
+*push* コンポーネントには `send()` または `transfer()` を使用し、*pull* コンポーネントには `call.value()()` を使用します。
 
 valueの送信に `send()`や `transfer()` を排他的に使用しても、リエントラントに対しては安全ではなく、
 特定のvalueを再入可能で安全にするということだけを指摘しておきましょう。
@@ -91,12 +91,12 @@ ExternalContract(someAddress).deposit.value(100);
 ```
 
 
-### 外部呼び出しではプッシュ型よりもプル型が望ましい 
+### 外部呼び出しでは *push* 型よりも *pull* 型が望ましい 
 
 外部呼び出しが誤ってまたは意図的に失敗する可能性があります。
 このような障害によって引き起こされる被害を最小限に抑えるには、各外部呼び出しを、受信者が開始できる独自のトランザクションに分離する方がよい場合があります。
-これは、特に支払いに関連します。ユーザーへ自動的に資金を送金（プッシュ）するのではなく、資金を引き出してもらう（プルしてもらう）ことをお勧めします。
-(これにより、[ガスリミット問題](https://github.com/ConsenSys/smart-contract-best-practices/#dos-with-block-gas-limit)の可能性も減ります。)
+これは、特に支払いに関連します。ユーザーへ自動的に資金を送金（push）するのではなく、資金を引き出してもらう（pullしてもらう）ことをお勧めします。
+(これにより、[ガスリミット問題](./known_attacks#dos-with-block-gas-limit)の可能性も減ります。)
 単一のトランザクションで複数の`send()`呼び出しを組み合わせることは避けてください。
 
 ```sol
@@ -166,31 +166,32 @@ contract Worker
 }
 ```
 
-デプロイされた`Destructor`コントラクトのアドレスを引数として`Worker.doWork()`が呼び出されると、Workerコントラクトはself-destructします。実行を信頼できるコントラクトにのみ委任し、**ユーザーが指定したアドレスには委任しないでください**。
+デプロイされた`Destructor`コントラクトのアドレスを引数として`Worker.doWork()`が呼び出されると、Workerコントラクトはself-destructします。実行を信頼できるコントラクトにのみ委譲し、**ユーザーが指定したアドレスには委譲しないでください**。
 
 !!! Warning
-      Don't assume contracts are created with zero balance
-      An attacker can send ether to the address of a contract before it is created.  Contracts should not assume that its initial state contains a zero balance.  See [issue 61](https://github.com/ConsenSys/smart-contract-best-practices/issues/61) for more details.
+      コントラクトが残高ゼロで作成されていると想定してはいけません。攻撃者はコントラクトが作成される前にコントラクトアドレスにetherを送ることができます。
+      コントラクトは、その初期状態に残高ゼロであると想定するべきではありません。詳細は、[issue 61](https://github.com/ConsenSys/smart-contract-best-practices/issues/61)を参照してください。
   
 ## オンチェーンのデータは公開されていることを忘れない
 
-多くのアプリケーションでは、データをある時点まで非公開にする必要があります。ゲーム(例えば、オンチェーン上のじゃんけん)とオークション(例えば、2位価格封印入札[Vickrey auctions](https://en.wikipedia.org/wiki/Vickrey_auction)は、2つの主要なカテゴリの例です。
+多くのアプリケーションでは、データをある時点まで非公開にする必要があります。ゲーム（例、オンチェーン上のじゃんけん）とオークション（例、2位価格封印入札[Vickrey auctions](https://en.wikipedia.org/wiki/Vickrey_auction)）は、2つの主要なカテゴリの例です。
 プライバシーが問題となるアプリケーションを構築する場合は、ユーザーに情報を早期に公開しないように注意してください。
 最良の戦略は、別々のフェーズで[コミットメントスキーム](https://en.wikipedia.org/wiki/Commitment_scheme)を使用することです。最初に値のハッシュを使用してコミットし、後の段階で値を表示します。
 
 例:
 
 * じゃんけんでは、両方のプレイヤーに、最初に意図した移動のハッシュを提出する必要があります。送信された移動がハッシュと一致しない場合、例外をthrowします。
-* オークションでは、プレイヤーに初期段階で入札額のハッシュ値を提示し(入札額を超える入金額とともに)、第2段階でアクション入札額を提示する必要があります。
-* 乱数ジェネレータに依存するアプリケーションを開発する場合は、(1)プレイヤーが移動を提出する、(2)乱数が生成される、(3)プレイヤーが支払う順序が常に必要です。乱数が生成される方法自体は、活発な研究の領域です。現在のクラス最高のソリューションには、Bitcoinブロックヘッダー(http://btcrelay.org で検証済み)、ハッシュコミット公開スキーム(すなわち、一方の当事者が数値を生成し、そのハッシュを公開して値にコミットし、 後でその値を明らかにする)と[RANDAO](http://github.com/randao/randao)。Ethereumは確定的プロトコルであるため、プロトコル内の変数を予測不可能な乱数として使用することはできません。マイナーはある程度`block.blockhash()`値を管理していることにも注意してください<sup><a href='https://ethereum.stackexchange.com/questions/419/when-can-blockhash-be-safely-used-for-a-random-number-when-would-it-be-unsafe'>\*</a></sup>。
+* オークションでは、プレイヤーに初期段階で入札額のハッシュ値を提示し（入札額を超える入金額とともに）、第2段階でアクション入札額を提示する必要があります。
+* 乱数ジェネレータに依存するアプリケーションを開発する場合は、(1)プレイヤーが手を加える、(2)乱数が生成される、(3)プレイヤーが支払う、という順序が常に必要です。乱数が生成される方法は、それ自体が活発な研究の領域です。
+現在のクラス最高のソリューションには、Bitcoinブロックヘッダー（http://btcrelay.org で検証済み）、ハッシュコミット公開スキーム（すなわち、一方の当事者が数値を生成し、そのハッシュを公開して値にコミットし、 後でその値を明らかにする）そして[RANDAO](http://github.com/randao/randao)です。Ethereumは確定的プロトコルであるため、プロトコル内の変数を予測不可能な乱数として使用することはできません。マイナーはある程度`block.blockhash()`値を管理していることにも注意してください<sup><a href='https://ethereum.stackexchange.com/questions/419/when-can-blockhash-be-safely-used-for-a-random-number-when-would-it-be-unsafe'>\*</a></sup>。
 
 ## 2者コントラクトまたはN者コントラクトでは、一部の参加者が「オフラインになる」可能性があることに注意する
 
-特定の要求を行っている特定の当事者に応じて払い戻しをしたり、他の方法で資金を引き出すことはできません。 
-例えば、じゃんけんでは、共通の間違いの1つは、両方のプレーヤーが自分の動きを決定するまで支払いを行わないことです。
-しかし、悪意のあるプレイヤーは、決して移動を提出しないことによって他のプレイヤーを「悲しませる」ことができます。
-実際に、プレイヤーが他のプレイヤーの明らかな動きを見て、失ったと判断した場合、この問題はステートの決済チャネルのコンテキストでも発生する可能性があります。
-そのような状況が問題である場合、(1)おそらく期限を過ぎて参加していない参加者を迂回させる方法を提供する、(2)参加者が参加しているすべての状況で情報を提出するための追加の経済的インセンティブを加えることを検討するそうするはずです。
+他の方法で資金を引き出すことなく、特定の行動を実行している特定の関係者に返金または請求プロセスを依存させないでください。
+たとえば、じゃんけんゲームでよくある間違いの1つは、両方のプレーヤーが自分の手を出すまで支払いを行わないことです。
+しかし、悪意のあるプレイヤーは、決して動きを決めないことによって他のプレイヤーを「悲しませる」ことができます。
+実際、プレイヤーが他のプレイヤーの明らかにされた動きを見て、彼らが負けたと判断した場合、彼らは自分の動きを提出する理由が全くありません。この問題は、ステートチャネルの決済の状況でも発生する可能性があります
+そのような状況が問題である場合、(1)おそらく期限を過ぎて参加していない参加者を迂回させる方法を提供する、(2)参加者がそうすることが想定されているすべての状況で情報を送信するための追加の経済的インセンティブを追加することを検討してください。
 
 ## 最大の負の数の符号付き整数否定に注意する
 
@@ -226,10 +227,10 @@ contract Negation {
 
 以下の推奨事項は、Solidity固有のものですが、他の言語でスマートコントラクトを作成するための参考にもなります。
 
-## `assert()`で不変量を強制する
+## `assert()`で不変条件を強制する
 
 アサーションが失敗した場合（不変プロパティの変更など）、アサートガードがトリガーされます。
-例えば、トークン発行コントラクトにおけるトークンとetherの発行比率は固定されていてもよい。
+例えば、トークン発行コントラクトにおけるトークンとetherの発行比率が固定されている場合です。
 これが常に `assert（）`の場合に当てはまることを確認することができます。
 アサートガードは、コントラクトを一時停止し、アップグレードを許可するなど、他の手法と組み合わせることがよくあります。
 （でなければあなたはいつも失敗しているアサーションで立ち往生するかもしれません。）
@@ -255,13 +256,13 @@ contract Token {
 
 Solidity 0.4.10から`assert()`と`require()`が導入されました。
 
-> 便利な関数**assert**および**require**は、条件をチェックし、条件が満たされない場合は例外をスローするために使用できます。
+> 便利な関数 **assert** および **require** は、条件をチェックし、条件が満たされない場合は例外をスローするために使用できます。
 
-> **assert**関数は、内部エラーをテストし、インバリアントをチェックするためにのみ使用されるべきです。
+> **assert** 関数は、内部エラーをテストし、不変条件をチェックするためにのみ使用されるべきです。
 
-> **require**関数は有効な条件を保証するために使われるべきです。たとえば、入力値、あるいはコントラクトの状態変数の条件が合致している、または外部コントラクトへの呼び出しからの戻り値を検証するなどです。<sup><a href='https://solidity.readthedocs.io/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions'>\*</a></sup>
+> **require** 関数は有効な条件を保証するために使われるべきです。たとえば、入力値、あるいはコントラクトの状態変数の条件が合致している、または外部コントラクトへの呼び出しからの戻り値を検証するなどです。<sup><a href='https://solidity.readthedocs.io/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions'>\*</a></sup>
 
-このパラダイムに従うことで、正式な分析ツールは無効なオペコードに決して到達できないことを検証することができます。つまり、コード内のインバリアントに違反していないこと、およびコードが正式に検証されていることを意味します。
+このパラダイムに従うことで、正式な分析ツールは無効なオペコードに決して到達できないことを検証することができます。つまり、コード内の不変条件に違反していないこと、およびコードが正式に検証されていることを意味します。
 
 ```sol
 pragma solidity ^0.5.0;
@@ -311,13 +312,15 @@ contract Election {
 
 この場合、`Registry`コントラクトは`isVoter()`の中で`Election.vote()`を呼び出すことによってリエントラント攻撃を仕掛けることができます。
 
-修飾子は[エラー処理](https://solidity.readthedocs.io/en/develop/control-structures.html#error-handling-assert-require-revert-and-exceptions)にのみ使用してください。
+`isOwner()`などの複数の関数で重複する条件チェックを置き換えるには[修飾子](https://solidity.readthedocs.io/en/develop/contracts.html#function-modifiers)を使用します。
+それ以外の場合は、関数内で`require`または`revert`を使用します。これにより、スマートコントラクトコードが読みやすくなり、監査が容易になります。
+
 
 ## 整数除算での丸めに注意する
 
 すべての整数の除算は、最も近い整数に切り下げられます。さらに精度が必要な場合は、乗数を使用するか、分子と分母の両方を格納することを検討してください。
 
-(将来的には、Solidityは固定小数点型を使用するため、これは簡単になります)
+(将来的には、Solidityは[固定小数点型](https://solidity.readthedocs.io/en/develop/types.html#fixed-point-numbers)を使用するため、これは簡単になります。)
 
 ```sol
 // bad
@@ -341,9 +344,9 @@ uint denominator = 2;
 
 ## Etherは強制的にアカウントに送ることが出来る
 
-厳密にコントラクトの残高をチェックする不変量をコーディングすることに注意してください。
+厳密にコントラクトの残高をチェックする不変条件をコーディングすることに注意してください。
 
-攻撃者は任意のアカウントにweiを強制的に送ることができ、これは防ぐことができません（ `revert（）`を実行するフォールバック関数でさえも）。
+攻撃者は任意のアカウントにweiを強制的に送ることができ、これは防ぐことができません（ `revert（）`を実行するフォールバック関数でさえもそうではありません）。
 
 攻撃者はコントラクトを作成し、1weiで資金を調達し、 `selfdestruct（victimAddress）`を呼び出すことでこれを行うことができます。
 `victimAddress`ではコードが呼び出されないので、防ぐことはできません。
@@ -389,7 +392,9 @@ function() payable { require(msg.data.length == 0); LogDepositReceived(msg.sende
 ## payable関数と状態変数を明示的にマークする
 Solidity `0.4.0`からは、etherを受け取っているすべての関数は`payable`修飾子を使わなければなりません。そうでなければ、トランザクションが`msg.value> 0`の場合は（[こちらの例の場合を除いて](./recommendations/#ether)）リバートされます。
 
-Declare variables and especially function arguments as `address payable`, if you want to call `transfer` on them. You can use `.transfer(..)` and `.send(..)` on `address payable`, but not on `address`. You can use a low-level `.call(..)` on both `address` and `address payable`, even if you attach value to it. This is not recommended.<sup><a href='https://ethereum.stackexchange.com/questions/64108/whats-the-difference-between-address-and-address-payable'>\*</a></sup>
+あなたが関数に `transfer` を呼び出したい場合は、変数、特に関数の引数を`address payable`として宣言してください。
+`address payable`に`.transfer(..)`および`.send(..)`を使用できますが、`address`は使用できません。
+関数にEther値を紐づけていたとしても、`address`と`address payable`の両方に低レベルの`.call(..)`を使うことができます。ただ推奨はされません。<sup><a href='https://ethereum.stackexchange.com/questions/64108/whats-the-difference-between-address-and-address-payable'>\*</a></sup>
 
 !!! Note
 
@@ -400,11 +405,9 @@ Declare variables and especially function arguments as `address payable`, if you
 
 ## 関数と状態変数の可視性を明示的にマークする
 
-関数と状態変数の可視性を明示的にラベル付けする。
-関数は `external`、` public`、 `internal`、` private`のように指定できます。
-それらの違いを理解してください。たとえば、 `public`ではなく` external`で十分でしょう。
-状態変数については、「外部」は不可能である。
-可視性を明示的にラベルすると、関数を呼び出すことができるか、変数にアクセスできるかについての間違った前提を簡単にキャッチできます。
+関数と状態変数の可視性を明示的にラベル付けします。関数は `external`、`public`、 `internal`、`private`のように指定できます。
+それらの違いを理解してください。たとえば、`public`ではなく`external`で十分でしょう。
+状態変数の場合は、`external`は不可能である。可視性を明示的にラベルすると、関数を呼び出すことができるか、変数にアクセスできるかについての間違った前提を簡単にキャッチできます。
 
 * `External` 関数はコントラクトインタフェースの一部です。External関数`f`を内部的に呼び出すことはできません（つまり、`f()`は機能しませんが、`this.f()` は機能します）。大量のデータを受け取る場合、External関数はより効率的な場合があります。
 * `Public` 関数はコントラクトインタフェースの一部であり、内部的にまたはメッセージを介して呼び出すことができます。パブリック状態変数の場合、自動的にgetter関数（下記参照）が生成されます。
@@ -437,8 +440,8 @@ function internalAction() internal {
 ## プラグマを特定のコンパイラのバージョンにロックする
 
 コントラクトは、最もよくテストされたものと同じコンパイラ・バージョンとフラグでデプロイする必要があります。
-プラグマをロックすると、未知のバグのリスクが高い最新のコンパイラなどを使用して、コントラクトが誤って展開されないようになります。
-コントラクトは他の人によっても展開される可能性があり、プラグマはオリジナルの著者が意図したコンパイラのバージョンを示します。
+プラグマをロックすると、未知のバグのリスクが高い最新のコンパイラなどを使用して、コントラクトが誤ってデプロイされないようになります。
+コントラクトは他の人によってもデプロイされる可能性があり、プラグマはオリジナルの著者が意図したコンパイラのバージョンを示します。
 
 ```sol
 // bad
@@ -513,7 +516,7 @@ contract Game {
 `require（msg.sender.send（1 ether））`のようなパターンは `msg.sender.transfer（1 ether）`のように `transfer（）`を使って単純化することもできます。
 同様の変更については[Solidity Change log](https://github.com/ethereum/solidity/blob/develop/Changelog.md)を調べてください。
 
-## ビルトインはシャドーイング出来ることに注意する
+## 「ビルトイン」はシャドーイング出来ることに注意する
 
 Solidityの組み込みグローバルを[シャドーイング](https://en.wikipedia.org/wiki/Variable_shadowing)することは現在可能です。
 これにより、コントラクトは `msg`や` revert() `などの組み込み関数の機能をオーバーライドすることができます。
@@ -662,7 +665,7 @@ contract A is B, C {
   }
 }
 ```
-コントラクトがデプロイされると、コンパイラは継承を右から左に*線形化*します（_is_ キーワードに続いて、親コントラクトは最も基底となるものから派生されているコントラクトまで、リスト化されます。）。
+コントラクトがデプロイされると、コンパイラは継承を右から左に *線形化* します（_is_ キーワードに続いて、親コントラクトは最も基底となるものから、派生されているコントラクトまでリスト化されます。）。
 これがコントラクトAの線形化です。:
 
 **Final <- B <- C <- A**
@@ -706,7 +709,7 @@ contract TypeUnsafeAuction {
 ```
 
 上記の`TypeSafeAuction`コントラクトを使用する利点は、次の例からわかります。
-`validateBet()`が`address`引数、またはValidator以外のコントラクトタイプで呼び出された場合、コンパイラは次のエラーをスローします。
+`validateBet()`が`address`引数、またはValidator以外のコントラクトタイプで呼び出された場合、コンパイラは次のエラーをthrowします。
 
 ```sol
 contract NonValidator{}
@@ -782,11 +785,11 @@ contract FakeEOA {
 
 ## 廃止予定/過去の推奨事項
 
-これらは、プロトコルの変更や強固性の改善によりもはや関連性のない推奨事項です。後世のためにここに記録されています。
+これらは、プロトコルの変更やsolidityの改善により、もはや関連性のない推奨事項です。後世のためにここに記録されています。
 
 ### ゼロによる除算に注意 (Solidity < 0.4)
 
-バージョン0.4以前のSolidityでは、数値をゼロで割ったときに例外を「throw」しません。 バージョン0.4以上で動作していることを確認してください。
+バージョン0.4より前では、Solidityは[ゼロを返し](https://github.com/ethereum/solidity/issues/670)、数値をゼロで割ったときに例外を`throw`しません。少なくともバージョン0.4を実行していることを確認してください。
 
 ### 関数とイベントを区別する (Solidity < 0.4.21)
 

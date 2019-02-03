@@ -2,12 +2,13 @@
 正式なセキュリティ通知のソースはEthereum Blogですが、多くの場合、脆弱性は他の場所で以前に公開され、議論されます。
 
 - [Ethereum Blog](https://blog.ethereum.org/): Ethereum公式ブログ
-  - [Ethereum Blog - Security only](https://blog.ethereum.org/category/security/): *Security* とタグ付けされた全てのブログポスト
+    - [Ethereum Blog - Security only](https://blog.ethereum.org/category/security/): *Security* とタグ付けされた全てのブログポスト
 - [Ethereum Gitter](https://gitter.im/orgs/ethereum/rooms) チャットルーム
-  - [Solidity](https://gitter.im/ethereum/solidity)
-  - [Go-Ethereum](https://gitter.im/ethereum/go-ethereum)
-  - [CPP-Ethereum](https://gitter.im/ethereum/cpp-ethereum)
-  - [Research](https://gitter.im/ethereum/research)
+    - [Solidity](https://gitter.im/ethereum/solidity)
+    - [Go-Ethereum](https://gitter.im/ethereum/go-ethereum)
+    - [CPP-Ethereum](https://gitter.im/ethereum/cpp-ethereum)
+    - [Research](https://gitter.im/ethereum/research)
+- [Smart Contract Security Weekly](https://tinyletter.com/smart-contract-security): Ethereum Smart Contractおよびインフラストラクチャセキュリティについて毎週更新 ([過去の記事](https://tinyletter.com/smart-contract-security/archive))
 - [Reddit](https://www.reddit.com/r/ethereum)
 - [Network Stats](https://ethstats.net/)
 

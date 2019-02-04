@@ -1,6 +1,7 @@
 # Smart Contract Security Best Practices
 
-Visit the documentation site: https://consensys.github.io/smart-contract-best-practices/
+このドキュメントは、[Ethereum Smart Contract Security Best Practices](https://consensys.github.io/smart-contract-best-practices/)を日本語訳したものです。 原文より内容が古かったり、訳に誤りがあったりする可能性があります。必ず原文も併せてご確認ください。PR大歓迎です。
+Visit the documentation site: https://msykd.github.io/smart-contract-best-practices/
 
 Read the docs in Chinese: https://github.com/ConsenSys/smart-contract-best-practices/blob/master/README-zh.md
 

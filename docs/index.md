@@ -6,7 +6,6 @@
 中級者のSolidityプログラマ向けにセキュリティに関する基礎知識を提供します。
 これは[ConsenSys Diligence](https://media.consensys.net/introducing-consensys-diligence-cf38f83948c)とEthereumコミュニティによって維持されています。
 
-[![Join the chat at https://gitter.im/ConsenSys/smart-contract-best-practices](https://badges.gitter.im/ConsenSys/smart-contract-best-practices.svg)](https://gitter.im/ConsenSys/smart-contract-best-practices?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## トピックス
 
@@ -16,7 +15,7 @@
 * [リスクの備え方](./software_engineering) リスク軽減の為のアーキテクチャと設計の概要を説明します。
 * [ドキュメント化の手法](./documentation_procedures) 他のエンジニアや監査を行う人の為にシステムをドキュメント化する為のベストプラクティスを説明します。
 * [便利なツール](./security_tools) コード品質を向上させる為のツールと、脆弱性の検出方法を説明します。
-* [セキュリティに関するEIP](./security_eips) セキュリティの問題と脆弱性に関連するEIPを説明します。
+* [セキュリティ関連EIP](./security_eips) セキュリティの問題と脆弱性に関連するEIPを説明します。
 * [セキュリティに関する情報](./security_notifications) 最新の情報源を表示します。
 * [トークン](./tokens.md) 特にトークンに関連するベストプラクティスの概要を説明します。
 

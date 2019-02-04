@@ -7,10 +7,10 @@
 * [Augur](https://www.augur.net/bounty/): 2018年10月にローンチ、最大支払額$250,000
 * [Aragon](https://wiki.aragon.org/dev/bug_bounty/): 2018年10月にローンチ、最大支払額$250,000
 * [BrickBlock](https://blog.brickblock.io/join-the-brickblock-bug-bounty-program-7b431f2bcc02): 2018年9月にローンチ、最大支払額100ETH
+* [Colony.io](https://blog.colony.io/announcing-the-colony-network-bug-bounty-f44cabaca9a3/)
+* [Ethereum Foundation](https://bounty.ethereum.org/#bounty-scope): クライアント、solidity、vyper等、広範にわたるプログラム
+* [Etherscan.io](https://etherscan.io/bugbounty)
+* [Gitcoin Bounties](https://gitcoin.co/explorer): バウンティベースのコラボレーションツール
 * [MelonPort](https://melonport.com/bug-bounty)
 * [Parity](https://www.parity.io/bug-bounty/): クライアントコードとコントラクトコードを含む
-* [Ethereum Foundation](https://bounty.ethereum.org/#bounty-scope): クライアント、solidity、vyper等、広範にわたるプログラム
-
-
-
-
+* [Raiden.network](https://raiden.network/bug-bounty.html)

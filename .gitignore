@@ -3,6 +3,7 @@
 
 # virtualenv directory
 /venv
+.python-version
 
 # build directory
 /site
